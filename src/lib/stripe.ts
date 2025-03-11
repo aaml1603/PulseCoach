@@ -1,3 +1,3 @@
 // Stripe configuration
 export const STRIPE_PUBLISHABLE_KEY =
-  "pk_live_51QL7EtHHtFMUu9tgWGXGBmPHXZSv7WtqnzHXiqwrWv2WdOuU26aoMVep0vjHMpfvHR4LqKQWRfoVuKE78MxVir5d00gNpVFCwk";
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";

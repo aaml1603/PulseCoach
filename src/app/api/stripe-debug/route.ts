@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { STRIPE_PUBLISHABLE_KEY } from "@/lib/stripe";
+// Import the key from environment variables directly
+const STRIPE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
 export async function GET(request: NextRequest) {
   try {

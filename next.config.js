@@ -3,6 +3,8 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  // Add transpilePackages for Stripe
+  transpilePackages: ["stripe"],
 };
 
 if (process.env.NEXT_PUBLIC_TEMPO) {

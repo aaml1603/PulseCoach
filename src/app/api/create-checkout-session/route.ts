@@ -22,7 +22,8 @@ export async function POST(request: NextRequest) {
       .single();
 
     // Create a direct Stripe checkout session instead of using Edge Function
-    const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+    const { default: Stripe } = await import("stripe");
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
     // Get available prices from your Stripe account
     const prices = await stripe.prices.list({
@@ -30,10 +31,7 @@ export async function POST(request: NextRequest) {
       limit: 10,
     });
 
-    console.log(
-      "Available prices:",
-      prices.data.map((p) => ({ id: p.id, product: p.product })),
-    );
+    // Remove console.log for production
 
     // Create Stripe checkout session using your existing product
     const session = await stripe.checkout.sessions.create({
