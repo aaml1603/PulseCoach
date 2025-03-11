@@ -1,3 +1,4 @@
+// This layout doesn't require authentication
 export default function ClientPortalLayout({
   children,
 }: {

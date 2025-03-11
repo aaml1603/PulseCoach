@@ -1,6 +1,4 @@
 import { Metadata } from "next";
-import { createClient } from "../../../../supabase/server";
-import { redirect } from "next/navigation";
 import ClientPortalContent from "@/components/client-portal-content";
 
 export const metadata: Metadata = {

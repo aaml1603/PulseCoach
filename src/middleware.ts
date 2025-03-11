@@ -50,7 +50,9 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public (public files)
      * - api/polar/webhook (webhook endpoints)
+     * - client-portal (client portal pages)
+     * - api/client-portal (client portal API endpoints)
      */
-    "/((?!_next/static|_next/image|favicon.ico|public|api/payments/webhook).*)",
+    "/((?!_next/static|_next/image|favicon.ico|public|api/payments/webhook|client-portal|api/client-portal).*)",
   ],
 };
