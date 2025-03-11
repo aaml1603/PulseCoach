@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Bell, X, ExternalLink } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Bell, X, ExternalLink, Send, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Popover,
   PopoverContent,
@@ -42,6 +43,8 @@ export default function NotificationBell() {
     name?: string;
     id?: string;
   } | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [sendingReply, setSendingReply] = useState(false);
   const [workoutDetails, setWorkoutDetails] = useState<{
     name?: string;
   } | null>(null);
@@ -129,7 +132,20 @@ export default function NotificationBell() {
   };
 
   const fetchRelatedDetails = async (notification: Notification) => {
-    if (
+    if (notification.type === "message" && notification.related_entity_id) {
+      const supabase = createClient();
+
+      // Get client details
+      const { data: clientData } = await supabase
+        .from("clients")
+        .select("name, id")
+        .eq("id", notification.related_entity_id)
+        .single();
+
+      if (clientData) {
+        setClientDetails(clientData);
+      }
+    } else if (
       notification.type === "workout_completed" &&
       notification.related_entity_id
     ) {
@@ -183,6 +199,47 @@ export default function NotificationBell() {
       router.push(`/dashboard/clients/${clientDetails.id}`);
       setDialogOpen(false);
       setOpen(false);
+    }
+  };
+
+  const handleViewMessages = () => {
+    if (clientDetails?.id) {
+      router.push(`/dashboard/clients/${clientDetails.id}/messages`);
+      setDialogOpen(false);
+      setOpen(false);
+    }
+  };
+
+  const handleSendReply = async () => {
+    if (!replyText.trim() || !clientDetails?.id) return;
+
+    setSendingReply(true);
+    try {
+      const supabase = createClient();
+
+      // Send the message
+      await fetch("/api/client-portal/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clientId: clientDetails.id,
+          content: replyText,
+          isFromClient: false,
+        }),
+      });
+
+      // Clear the reply text and close the dialog
+      setReplyText("");
+      setDialogOpen(false);
+
+      // Show success message or notification
+      // You could add a toast notification here
+    } catch (error) {
+      console.error("Error sending reply:", error);
+    } finally {
+      setSendingReply(false);
     }
   };
 
@@ -273,6 +330,58 @@ export default function NotificationBell() {
 
           <div className="py-4">
             <p className="text-sm">{selectedNotification?.message}</p>
+
+            {selectedNotification?.type === "message" && clientDetails && (
+              <div className="mt-4 space-y-4">
+                <div className="p-4 bg-muted rounded-md">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="font-medium">
+                        Client: {clientDetails.name}
+                      </h4>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleViewMessages}
+                      >
+                        <MessageCircle className="h-4 w-4 mr-2" /> All Messages
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleViewClient}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" /> View Client
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Textarea
+                    placeholder={`Reply to ${clientDetails.name}...`}
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    className="min-h-[80px]"
+                  />
+                  <Button
+                    className="w-full"
+                    onClick={handleSendReply}
+                    disabled={!replyText.trim() || sendingReply}
+                  >
+                    {sendingReply ? (
+                      "Sending..."
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4 mr-2" /> Send Reply
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {selectedNotification?.type === "workout_completed" &&
               clientDetails && (
