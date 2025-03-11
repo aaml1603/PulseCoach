@@ -31,7 +31,7 @@ export default function PricingCard({
 
     try {
       const { data, error } = await createClient().functions.invoke(
-        "supabase-functions-create-checkout",
+        "create-checkout",
         {
           body: {
             price_id: priceId,

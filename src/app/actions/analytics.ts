@@ -60,7 +60,7 @@ export async function getClientAnalytics(coachId: string) {
 
   // Calculate weekly change percentage
   let weeklyChangePercent = 0;
-  if (previousWeekSessions) {
+  if (previousWeekSessions && weeklySessions !== null) {
     weeklyChangePercent = Math.round(
       ((weeklySessions - previousWeekSessions) / previousWeekSessions) * 100,
     );

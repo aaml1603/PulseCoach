@@ -19,9 +19,7 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: plans, error } = await supabase.functions.invoke(
-    "supabase-functions-get-plans",
-  );
+  const { data: plans, error } = await supabase.functions.invoke("get-plans");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
