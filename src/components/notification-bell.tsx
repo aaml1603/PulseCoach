@@ -80,7 +80,10 @@ export default function NotificationBell() {
         },
         (payload) => {
           // Add new notification to the list
-          setNotifications((prev) => [payload.new, ...prev.slice(0, 9)]);
+          setNotifications((prev) => [
+            payload.new as Notification,
+            ...prev.slice(0, 9),
+          ]);
           setUnreadCount((prev) => prev + 1);
         },
       )

@@ -316,8 +316,12 @@ export default function NewClientMetricsPage({
                           const lbs = parseFloat(e.target.value);
                           if (!isNaN(lbs)) {
                             const kg = lbsToKg(lbs);
-                            document.getElementById("weight").value =
-                              kg.toString();
+                            const weightInput = document.getElementById(
+                              "weight",
+                            ) as HTMLInputElement | null;
+                            if (weightInput) {
+                              weightInput.value = kg.toString();
+                            }
                           }
                         }}
                       />

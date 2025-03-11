@@ -46,7 +46,6 @@ export default function EditWorkoutPage({
       if (data) {
         setName(data.name || "");
         setDescription(data.description || "");
-        updatePreview(data.description || "");
       }
     };
 

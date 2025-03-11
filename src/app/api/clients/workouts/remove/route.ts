@@ -23,10 +23,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get the client workout to verify ownership
+    // First get the client ID from the workout
     const { data: clientWorkout, error: workoutError } = await supabase
       .from("client_workouts")
-      .select("client_id, clients!inner(coach_id)")
+      .select("client_id")
       .eq("id", clientWorkoutId)
       .single();
 
@@ -34,8 +34,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Workout not found" }, { status: 404 });
     }
 
+    // Then check if the client belongs to this coach
+    const { data: client, error: clientError } = await supabase
+      .from("clients")
+      .select("coach_id")
+      .eq("id", clientWorkout.client_id)
+      .single();
+
+    if (clientError || !client) {
+      return NextResponse.json({ error: "Client not found" }, { status: 404 });
+    }
+
     // Check if the user is the coach of this client
-    if (clientWorkout.clients.coach_id !== user.id) {
+    if (client.coach_id !== user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
