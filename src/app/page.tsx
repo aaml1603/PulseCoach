@@ -15,6 +15,22 @@ import { Button } from "@/components/ui/button";
 import PricingButton from "@/components/pricing-button";
 import CTAButton from "@/components/cta-button";
 
+// Add structured data for SEO
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "PulseCoach",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "Offer",
+    price: "20.00",
+    priceCurrency: "USD",
+  },
+  description:
+    "A comprehensive platform for fitness coaches to track client progress, manage workout plans, and analyze performance data.",
+};
+
 export default async function Home() {
   const supabase = await createClient();
   const {
@@ -25,6 +41,11 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+      {/* Add structured data script for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <Navbar />
       <Hero />
 

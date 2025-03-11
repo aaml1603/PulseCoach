@@ -3,7 +3,12 @@ import ClientPortalContent from "@/components/client-portal-content";
 
 export const metadata: Metadata = {
   title: "Client Portal - PulseCoach",
-  description: "Access your workouts and track your fitness progress",
+  description:
+    "Access your workouts and track your fitness progress with your personal trainer",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function ClientPortalPage({

@@ -52,7 +52,7 @@ export default function FeedbackTab() {
   };
 
   return (
-    <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
+    <div className="fixed right-0 bottom-8 z-50">
       {/* Tab button */}
       <button
         onClick={() => setIsOpen(!isOpen)}

@@ -5,6 +5,14 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import Footer from "@/components/footer";
 
+export const metadata = {
+  title: "Pricing - PulseCoach",
+  description:
+    "Simple, transparent pricing for fitness coaches. Choose the perfect plan for your coaching business with no hidden fees.",
+  keywords:
+    "fitness coach pricing, personal trainer software pricing, workout management pricing",
+};
+
 export default async function PricingPage({
   searchParams,
 }: {

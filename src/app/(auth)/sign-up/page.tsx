@@ -7,6 +7,12 @@ import { SmtpMessage } from "../smtp-message";
 import { signUpAction } from "@/app/actions";
 import Navbar from "@/components/navbar";
 
+export const metadata = {
+  title: "Sign Up - PulseCoach",
+  description:
+    "Create your PulseCoach account and start managing your fitness clients and workout plans today.",
+};
+
 export default async function Signup(props: {
   searchParams: Promise<Message>;
 }) {
