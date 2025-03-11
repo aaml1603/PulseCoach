@@ -21,7 +21,25 @@ export async function GET(request: NextRequest) {
       .eq("access_token", token)
       .single();
 
+    // Log the token and error for debugging
+    console.log("Token used:", token);
+    console.log("Client error:", clientError);
+
     if (clientError || !client) {
+      // Check if token is expired based on access_token_expires_at
+      if (client && client.access_token_expires_at) {
+        const expiryDate = new Date(client.access_token_expires_at);
+        if (expiryDate < new Date()) {
+          return NextResponse.json(
+            {
+              error:
+                "Access token has expired. Please request a new link from your coach.",
+            },
+            { status: 401 },
+          );
+        }
+      }
+
       return NextResponse.json(
         { error: "Invalid or expired access token" },
         { status: 404 },

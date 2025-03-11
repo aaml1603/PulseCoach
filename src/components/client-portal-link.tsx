@@ -85,7 +85,7 @@ export default function ClientPortalLink({
           <DialogTitle>Client Portal Access</DialogTitle>
           <DialogDescription>
             Generate a unique link for {clientName} to access their workouts
-            without needing to create an account. This link will be valid for 30
+            without needing to create an account. This link will be valid for 90
             days.
           </DialogDescription>
         </DialogHeader>
@@ -99,7 +99,7 @@ export default function ClientPortalLink({
         {!portalUrl ? (
           <div className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              This will generate a new access link that will be valid for 30
+              This will generate a new access link that will be valid for 90
               days.{" "}
               <span className="text-amber-600 font-medium">
                 Note: This will invalidate any previous links.

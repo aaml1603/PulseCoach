@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     // Generate a new access token
     const accessToken = uuidv4();
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30); // Token valid for 30 days
+    expiresAt.setDate(expiresAt.getDate() + 90); // Token valid for 90 days instead of 30
 
     // Update the client with the new access token
     const { error: updateError } = await supabase

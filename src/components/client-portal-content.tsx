@@ -61,6 +61,12 @@ export default function ClientPortalContent({ token }: { token: string }) {
             This client portal link is invalid or has expired. Please contact
             your coach for a new link.
           </p>
+          <p className="text-xs text-muted-foreground mb-4">
+            Error details:{" "}
+            {error
+              ? "The access token may have expired or is invalid."
+              : "No client data found"}
+          </p>
           <Button>
             <Link href="/">Return to Home</Link>
           </Button>
