@@ -1,6 +1,5 @@
 import { createClient } from "../../../../supabase/server";
 import { NextRequest, NextResponse } from "next/server";
-import { STRIPE_PUBLISHABLE_KEY } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,21 +14,51 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient();
 
-    // Call the Supabase Edge Function to create a checkout session
-    const { data, error } = await supabase.functions.invoke("create-checkout", {
-      body: {
-        price_id: priceId,
+    // Get user email for the checkout session
+    const { data: userData } = await supabase
+      .from("users")
+      .select("email")
+      .eq("id", userId)
+      .single();
+
+    // Create a direct Stripe checkout session instead of using Edge Function
+    const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+    // Get available prices from your Stripe account
+    const prices = await stripe.prices.list({
+      active: true,
+      limit: 10,
+    });
+
+    console.log(
+      "Available prices:",
+      prices.data.map((p) => ({ id: p.id, product: p.product })),
+    );
+
+    // Create Stripe checkout session using your existing product
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          // Use the first available price from your Stripe account
+          price: prices.data[0]?.id,
+          quantity: 1,
+        },
+      ],
+      mode: "subscription",
+      success_url: `${returnUrl}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${returnUrl}?canceled=true`,
+      customer_email: userData?.email,
+      metadata: {
         user_id: userId,
-        return_url: returnUrl,
       },
     });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    const data = { sessionId: session.id, url: session.url };
 
     return NextResponse.json(data);
   } catch (error: any) {
+    console.error("Checkout session error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

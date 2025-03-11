@@ -121,13 +121,10 @@ export default function NotificationBell() {
 
   const markAllAsRead = async () => {
     const supabase = createClient();
-    await supabase
-      .from("notifications")
-      .update({ is_read: true })
-      .eq("is_read", false);
+    await supabase.from("notifications").delete().eq("is_read", false);
 
     // Update local state
-    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+    setNotifications((prev) => prev.filter((n) => n.is_read));
     setUnreadCount(0);
   };
 

@@ -17,6 +17,7 @@ import Link from "next/link";
 import { FadeIn, SlideUp } from "@/components/animations";
 import { FitnessStatsCard } from "@/components/ui/fitness-stats-card";
 import { FitnessProgressRing } from "@/components/ui/fitness-progress-ring";
+
 import { getClientAnalytics } from "../actions/analytics";
 
 export default async function Dashboard() {

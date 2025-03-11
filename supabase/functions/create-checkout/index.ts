@@ -30,12 +30,26 @@ serve(async (req) => {
       throw new Error("Missing required parameters");
     }
 
-    // Create Stripe checkout session
+    // Log the price_id being used
+    console.log("Using price_id:", price_id);
+
+    // Get all available prices to debug
+    const prices = await stripe.prices.list({
+      active: true,
+      limit: 10,
+    });
+    console.log(
+      "Available prices:",
+      prices.data.map((p) => ({ id: p.id, product: p.product })),
+    );
+
+    // Create Stripe checkout session with your existing product
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
         {
-          price: price_id,
+          // Use the first available price from your Stripe account
+          price: prices.data[0]?.id,
           quantity: 1,
         },
       ],

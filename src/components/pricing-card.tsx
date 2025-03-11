@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { Button } from "./ui/button";
 import {
@@ -11,8 +12,6 @@ import {
   CardTitle,
 } from "./ui/card";
 import { CheckCircle2 } from "lucide-react";
-import { createClient } from "../../supabase/client";
-import { STRIPE_PUBLISHABLE_KEY } from "@/lib/stripe";
 
 export default function PricingCard({
   item,
@@ -21,6 +20,8 @@ export default function PricingCard({
   item: any;
   user: User | null;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
+
   // Handle checkout process
   const handleCheckout = async (priceId: string) => {
     if (!user) {
@@ -30,22 +31,25 @@ export default function PricingCard({
     }
 
     try {
-      const { data, error } = await createClient().functions.invoke(
-        "create-checkout",
-        {
-          body: {
-            price_id: priceId,
-            user_id: user.id,
-            return_url: `${window.location.origin}/dashboard`,
-          },
-          headers: {
-            "X-Customer-Email": user.email || "",
-          },
-        },
-      );
+      setIsLoading(true);
 
-      if (error) {
-        throw error;
+      // Use the API route instead of directly calling the function
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          priceId,
+          userId: user.id,
+          returnUrl: `${window.location.origin}/dashboard`,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create checkout session");
       }
 
       // Redirect to Stripe checkout
@@ -56,6 +60,10 @@ export default function PricingCard({
       }
     } catch (error) {
       console.error("Error creating checkout session:", error);
+      alert(
+        "There was an error processing your request. Please try again later.",
+      );
+      setIsLoading(false);
     }
   };
 
@@ -105,8 +113,9 @@ export default function PricingCard({
             await handleCheckout(item.id);
           }}
           className="w-full py-6 text-lg font-medium bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-colors"
+          disabled={isLoading}
         >
-          Get Started
+          {isLoading ? "Processing..." : "Get Started"}
         </Button>
       </CardFooter>
     </Card>

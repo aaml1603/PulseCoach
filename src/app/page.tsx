@@ -1,6 +1,5 @@
 import Hero from "@/components/hero";
 import Navbar from "@/components/navbar";
-import PricingCard from "@/components/pricing-card";
 import Footer from "@/components/footer";
 import { createClient } from "../../supabase/server";
 import {
@@ -12,6 +11,9 @@ import {
   Bell,
   Users,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import PricingButton from "@/components/pricing-button";
+import CTAButton from "@/components/cta-button";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -199,11 +201,61 @@ export default async function Home() {
               fees.
             </p>
           </div>
-          <div className="flex flex-col items-center justify-center max-w-4xl mx-auto">
-            <div className="w-full">
-              {plans?.map((item: any) => (
-                <PricingCard key={item.id} item={item} user={user} />
-              ))}
+          <div className="flex flex-col items-center justify-center max-w-md mx-auto">
+            <div className="w-full bg-card border border-primary/20 rounded-xl overflow-hidden shadow-md">
+              <div className="bg-orange-500 text-white text-center py-3 px-4">
+                <h3 className="text-xl font-medium">Recommended Plan</h3>
+              </div>
+
+              <div className="p-8 text-center">
+                <div className="text-6xl font-bold mb-2">
+                  <span>$20</span>
+                  <span className="text-2xl text-muted-foreground">/month</span>
+                </div>
+
+                <div className="space-y-4 mt-8 text-left">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-orange-100 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    </div>
+                    <span>Unlimited clients</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-orange-100 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    </div>
+                    <span>Advanced analytics</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-orange-100 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    </div>
+                    <span>Priority support</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-orange-100 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    </div>
+                    <span>Custom workout builder</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-orange-100 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    </div>
+                    <span>Client portal access</span>
+                  </div>
+                </div>
+
+                <PricingButton
+                  priceId="coach_pro_plan"
+                  userId={user?.id}
+                  isLoggedIn={!!user}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -410,21 +462,7 @@ export default async function Home() {
             business and delivering better results to clients. Start your 14-day
             free trial today!
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/dashboard"
-              className="inline-flex items-center px-6 py-3 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
-            >
-              Get Started Now
-              <ArrowUpRight className="ml-2 w-4 h-4" />
-            </a>
-            <a
-              href="#pricing"
-              className="inline-flex items-center px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
-            >
-              View Pricing
-            </a>
-          </div>
+          <CTAButton />
         </div>
       </section>
 
