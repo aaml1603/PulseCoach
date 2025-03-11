@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if the user is the coach of this client
-    if (clientWorkout.clients.coach_id !== user.id) {
+    if (!Array.isArray(clientWorkout.clients) || clientWorkout.clients.length === 0 || clientWorkout.clients[0].coach_id !== user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
