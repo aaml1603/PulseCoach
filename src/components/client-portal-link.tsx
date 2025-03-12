@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Copy, Link2, CheckCircle2, Loader2 } from "lucide-react";
+import { Copy, Link2, CheckCircle2, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "../../supabase/client";
 
@@ -27,11 +27,14 @@ export default function ClientPortalLink({
   clientName,
 }: ClientPortalLinkProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isCheckingExisting, setIsCheckingExisting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [portalUrl, setPortalUrl] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasEmail, setHasEmail] = useState(true);
 
   // Check for existing portal link when dialog opens
   useEffect(() => {
@@ -43,16 +46,20 @@ export default function ClientPortalLink({
   const checkExistingLink = async () => {
     setIsCheckingExisting(true);
     setError(null);
+    setSuccess(null);
 
     try {
       const supabase = createClient();
       const { data: client, error } = await supabase
         .from("clients")
-        .select("access_token, access_token_expires_at")
+        .select("access_token, access_token_expires_at, email")
         .eq("id", clientId)
         .single();
 
       if (error) throw error;
+
+      // Check if client has email
+      setHasEmail(!!client?.email);
 
       if (client?.access_token) {
         // Check if token is still valid
@@ -79,6 +86,7 @@ export default function ClientPortalLink({
   const generateLink = async () => {
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
     setCopied(false);
 
     try {
@@ -101,6 +109,36 @@ export default function ClientPortalLink({
       setError(err.message || "An error occurred");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const sendEmailLink = async () => {
+    setIsSendingEmail(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch("/api/client-portal/send-link", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ clientId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send email");
+      }
+
+      setSuccess(data.message || "Email sent successfully");
+      // If we sent an email, we should have a new token, so update the URL
+      checkExistingLink();
+    } catch (err: any) {
+      setError(err.message || "Failed to send email");
+    } finally {
+      setIsSendingEmail(false);
     }
   };
 
@@ -141,6 +179,12 @@ export default function ClientPortalLink({
           </div>
         )}
 
+        {success && (
+          <div className="bg-green-50 text-green-600 p-3 rounded-md text-sm">
+            {success}
+          </div>
+        )}
+
         {isCheckingExisting ? (
           <div className="py-8 flex justify-center items-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -163,13 +207,35 @@ export default function ClientPortalLink({
               </Link>
               .
             </p>
-            <Button
-              onClick={generateLink}
-              disabled={isLoading}
-              className="w-full"
-            >
-              {isLoading ? "Generating..." : "Generate Access Link"}
-            </Button>
+            {hasEmail ? (
+              <Button
+                onClick={sendEmailLink}
+                disabled={isSendingEmail}
+                className="w-full"
+              >
+                {isSendingEmail ? (
+                  "Sending Email..."
+                ) : (
+                  <>
+                    <Mail className="mr-2 h-4 w-4" /> Send Portal Link via Email
+                  </>
+                )}
+              </Button>
+            ) : (
+              <>
+                <div className="bg-amber-50 text-amber-600 p-3 rounded-md text-sm mb-4">
+                  This client doesn't have an email address. You'll need to
+                  share the link manually.
+                </div>
+                <Button
+                  onClick={generateLink}
+                  disabled={isLoading}
+                  className="w-full"
+                >
+                  {isLoading ? "Generating..." : "Generate Access Link"}
+                </Button>
+              </>
+            )}
           </div>
         ) : (
           <div className="grid gap-4 py-4">
@@ -200,15 +266,35 @@ export default function ClientPortalLink({
               Share this link with your client. They can use it to access their
               assigned workouts without needing to create an account.
             </p>
+
+            {hasEmail && (
+              <Button
+                onClick={sendEmailLink}
+                disabled={isSendingEmail}
+                className="w-full mt-2"
+                variant="outline"
+              >
+                {isSendingEmail ? (
+                  "Sending Email..."
+                ) : (
+                  <>
+                    <Mail className="mr-2 h-4 w-4" /> Send Link via Email
+                  </>
+                )}
+              </Button>
+            )}
+
             <div className="mt-2">
               <Button
-                onClick={generateLink}
-                disabled={isLoading}
+                onClick={hasEmail ? sendEmailLink : generateLink}
+                disabled={isLoading || isSendingEmail}
                 variant="destructive"
                 size="sm"
                 className="w-full"
               >
-                {isLoading ? "Regenerating..." : "Regenerate Link"}
+                {isLoading || isSendingEmail
+                  ? "Processing..."
+                  : "Regenerate Link"}
               </Button>
               <p className="text-xs text-muted-foreground mt-1">
                 <span className="text-amber-600 font-medium">Warning:</span>{" "}
