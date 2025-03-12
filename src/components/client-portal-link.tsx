@@ -175,12 +175,12 @@ export default function ClientPortalLink({
           <div className="grid gap-4 py-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="link">Active portal access link</Label>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                 <Input
                   id="link"
                   value={portalUrl}
                   readOnly
-                  className="flex-1"
+                  className="flex-1 w-full mb-2 sm:mb-0"
                 />
                 <Button
                   type="button"

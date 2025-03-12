@@ -10,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useEffect, useState } from "react";
 
 import {
   Card,
@@ -36,6 +37,24 @@ export default function WeightChartRecharts({
   metrics,
   clientName,
 }: WeightChartProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Check if we're on mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // Filter and sort metrics with weight data
   const weightMetrics = metrics
     .filter((metric) => metric.weight !== null)
@@ -102,12 +121,11 @@ export default function WeightChartRecharts({
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={chartData}
-              margin={{
-                top: 10,
-                right: 30,
-                left: 0,
-                bottom: 0,
-              }}
+              margin={
+                isMobile
+                  ? { top: 10, right: 10, left: 0, bottom: 0 }
+                  : { top: 10, right: 30, left: 0, bottom: 0 }
+              }
             >
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
               <XAxis
@@ -115,12 +133,15 @@ export default function WeightChartRecharts({
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
+                tick={{ fontSize: isMobile ? 10 : 12 }}
+                interval={isMobile ? "preserveStartEnd" : 0}
               />
               <YAxis
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
                 domain={["auto", "auto"]}
+                width={isMobile ? 30 : 60}
               />
               <ChartTooltip
                 cursor={false}
@@ -132,6 +153,8 @@ export default function WeightChartRecharts({
                 stroke="var(--color-weight)"
                 fill="var(--color-weight)"
                 fillOpacity={0.4}
+                dot={{ r: isMobile ? 3 : 4 }}
+                activeDot={{ r: isMobile ? 5 : 6 }}
               />
             </AreaChart>
           </ResponsiveContainer>

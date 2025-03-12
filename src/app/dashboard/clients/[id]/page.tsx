@@ -85,8 +85,8 @@ export default async function ClientDetailsPage({
       </div>
 
       {/* Client Profile Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-1">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle>Profile</CardTitle>
           </CardHeader>
@@ -155,7 +155,7 @@ export default async function ClientDetailsPage({
         </Card>
 
         {/* Metrics Card */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Fitness Metrics</CardTitle>
             <Button asChild>
@@ -326,7 +326,7 @@ export default async function ClientDetailsPage({
                         clientId={params.id}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2 text-sm">
                       <div>
                         <span className="text-muted-foreground">Assigned:</span>{" "}
                         {new Date(item.assigned_date).toLocaleDateString()}

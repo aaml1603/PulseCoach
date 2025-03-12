@@ -75,7 +75,7 @@ export default function CoachProfileView({ coachId }: CoachProfileViewProps) {
 
   return (
     <div className="p-6 bg-card rounded-lg border">
-      <div className="flex flex-col md:flex-row gap-6 items-start">
+      <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
         <div className="w-full md:w-1/3 flex flex-col items-center">
           <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-border mb-3">
             {profile?.avatar_url ? (

@@ -103,7 +103,7 @@ export default async function WorkoutDetailsPage({
                     <h3 className="font-medium text-lg">
                       {item.exercise.name}
                     </h3>
-                    <div className="grid grid-cols-3 gap-4 mt-2 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2 text-sm">
                       <div>
                         <span className="text-gray-500">Sets:</span> {item.sets}
                       </div>

@@ -167,7 +167,7 @@ export default function ClientPortalContent({ token }: { token: string }) {
                                   <h4 className="font-medium">
                                     {exercise.exercise?.name}
                                   </h4>
-                                  <div className="grid grid-cols-3 gap-4 mt-2 text-sm">
+                                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2 text-sm">
                                     <div>
                                       <span className="text-gray-500">
                                         Sets:

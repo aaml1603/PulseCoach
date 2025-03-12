@@ -296,7 +296,7 @@ export default function CoachProfilePage() {
               </div>
             )}
 
-            <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
               {/* Avatar Upload */}
               <div className="w-full md:w-1/3">
                 <Label className="mb-2 block">Profile Picture</Label>
@@ -439,7 +439,7 @@ export default function CoachProfilePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col md:flex-row gap-6 items-start">
+            <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
               <div className="w-full md:w-1/3 flex flex-col items-center">
                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 mb-3">
                   {previewUrl || avatarUrl ? (

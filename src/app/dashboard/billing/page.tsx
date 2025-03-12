@@ -196,7 +196,7 @@ export default function BillingPage() {
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
                       <h3 className="text-sm font-medium text-muted-foreground">

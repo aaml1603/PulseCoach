@@ -59,7 +59,7 @@ export default async function Dashboard() {
 
         {/* Stats Overview */}
         <FadeIn
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           delay={200}
         >
           <SlideUp delay={100}>
@@ -122,9 +122,9 @@ export default async function Dashboard() {
         </FadeIn>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
           <SlideUp
-            className="md:col-span-2 bg-card rounded-xl p-6 border shadow-sm"
+            className="lg:col-span-2 bg-card rounded-xl p-6 border shadow-sm"
             delay={500}
           >
             <div className="flex items-center justify-between mb-4">
@@ -133,7 +133,7 @@ export default async function Dashboard() {
                 Coach Tools
               </span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Button
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
                 asChild
@@ -147,7 +147,7 @@ export default async function Dashboard() {
                 <Link href="/dashboard/clients">View All Clients</Link>
               </Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
               <Button className="w-full" variant="outline" asChild>
                 <Link href="/dashboard/exercises/new">Create Exercise</Link>
               </Button>

@@ -1,0 +1,12 @@
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  body {
+    position: relative;
+    width: 100%;
+  }
+}

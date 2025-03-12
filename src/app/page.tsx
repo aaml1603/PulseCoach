@@ -46,7 +46,7 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <Navbar />
+      <Navbar user={user} />
       <Hero />
 
       {/* Features Section */}
@@ -62,7 +62,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 icon: <Users className="w-6 h-6" />,
@@ -124,7 +124,7 @@ export default async function Home() {
       {/* Stats Section */}
       <section className="py-20 bg-orange-500 text-white">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold mb-2">5,000+</div>
               <div className="text-orange-100">Active Coaches</div>
@@ -152,7 +152,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
             <div className="text-center">
               <div className="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
                 <span className="text-orange-600 text-2xl font-bold">1</span>
@@ -293,7 +293,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-card p-6 rounded-xl shadow-sm border border-border">
               <div className="flex items-center mb-4">
                 <div className="h-12 w-12 rounded-full overflow-hidden mr-4">
@@ -380,7 +380,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <div className="flex gap-6 items-start">
               <div className="bg-orange-100 p-3 rounded-full flex-shrink-0">
                 <CheckCircle2 className="h-6 w-6 text-orange-600" />

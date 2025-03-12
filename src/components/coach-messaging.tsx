@@ -150,7 +150,7 @@ export default function CoachMessaging({
   }
 
   return (
-    <div className="flex flex-col h-[500px] border rounded-lg overflow-hidden bg-card">
+    <div className="flex flex-col h-[500px] border rounded-lg overflow-hidden bg-card w-full">
       {/* Messages header */}
       <div className="p-4 border-b bg-muted/30">
         <h3 className="font-medium">Messages with {clientName}</h3>
