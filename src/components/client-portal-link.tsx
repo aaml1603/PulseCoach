@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Copy, Link2, CheckCircle2 } from "lucide-react";
+import { Copy, Link2, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { createClient } from "../../supabase/client";
 
 interface ClientPortalLinkProps {
   clientId: string;
@@ -26,10 +27,54 @@ export default function ClientPortalLink({
   clientName,
 }: ClientPortalLinkProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingExisting, setIsCheckingExisting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [portalUrl, setPortalUrl] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  // Check for existing portal link when dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      checkExistingLink();
+    }
+  }, [isOpen]);
+
+  const checkExistingLink = async () => {
+    setIsCheckingExisting(true);
+    setError(null);
+
+    try {
+      const supabase = createClient();
+      const { data: client, error } = await supabase
+        .from("clients")
+        .select("access_token, access_token_expires_at")
+        .eq("id", clientId)
+        .single();
+
+      if (error) throw error;
+
+      if (client?.access_token) {
+        // Check if token is still valid
+        const expiryDate = client.access_token_expires_at
+          ? new Date(client.access_token_expires_at)
+          : null;
+        const isValid = expiryDate && expiryDate > new Date();
+
+        if (isValid) {
+          // Construct the portal URL
+          const baseUrl = window.location.origin;
+          const url = `${baseUrl}/client-portal/${client.access_token}`;
+          setPortalUrl(url);
+        }
+      }
+    } catch (err: any) {
+      console.error("Error checking existing link:", err);
+      // Don't show error to user, just proceed as if no link exists
+    } finally {
+      setIsCheckingExisting(false);
+    }
+  };
 
   const generateLink = async () => {
     setIsLoading(true);
@@ -84,9 +129,9 @@ export default function ClientPortalLink({
         <DialogHeader>
           <DialogTitle>Client Portal Access</DialogTitle>
           <DialogDescription>
-            Generate a unique link for {clientName} to access their workouts
-            without needing to create an account. This link will be valid for 90
-            days.
+            {portalUrl ? "Manage the access link" : "Generate a unique link"}{" "}
+            for {clientName} to access their workouts without needing to create
+            an account. This link will be valid for 90 days.
           </DialogDescription>
         </DialogHeader>
 
@@ -96,7 +141,11 @@ export default function ClientPortalLink({
           </div>
         )}
 
-        {!portalUrl ? (
+        {isCheckingExisting ? (
+          <div className="py-8 flex justify-center items-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : !portalUrl ? (
           <div className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
               This will generate a new access link that will be valid for 90
@@ -125,7 +174,7 @@ export default function ClientPortalLink({
         ) : (
           <div className="grid gap-4 py-4">
             <div className="flex flex-col gap-2">
-              <Label htmlFor="link">Portal access link</Label>
+              <Label htmlFor="link">Active portal access link</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="link"
