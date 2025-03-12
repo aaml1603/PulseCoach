@@ -86,21 +86,55 @@ export async function POST(request: NextRequest) {
 
     const portalUrl = `${baseUrl}/client-portal/${accessToken}`;
 
-    // Use the new API route to send the email
-    const response = await fetch(`${baseUrl}/api/send-workout-email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        clientId: client.id,
-        portalUrl: portalUrl,
-      }),
-    });
+    // Create email template
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <img src="https://i.imgur.com/xFQGdgC.png" alt="PulseCoach Logo" style="width: 80px; height: 80px;">
+          <h1 style="color: #FF5733; margin-top: 10px;">PulseCoach</h1>
+        </div>
+        
+        <h2 style="color: #333333;">Hello ${client.name},</h2>
+        
+        <p style="color: #555555; line-height: 1.5;">
+          ${coachName} has created a personal fitness portal for you to access your workouts, track your progress, and communicate directly.
+        </p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${portalUrl}" style="background-color: #FF5733; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
+            Access Your Portal
+          </a>
+        </div>
+        
+        <p style="color: #555555; line-height: 1.5;">
+          This link is valid for 90 days and is unique to you. Please don't share it with others.
+        </p>
+        
+        <p style="color: #555555; line-height: 1.5;">
+          If you have any questions, you can reply directly to your coach through the portal.
+        </p>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #888888; font-size: 12px; text-align: center;">
+          <p>© ${new Date().getFullYear()} PulseCoach. All rights reserved.</p>
+        </div>
+      </div>
+    `;
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Failed to send email: ${JSON.stringify(errorData)}`);
+    // Send email using Supabase Edge Function
+    const { data: emailData, error: emailError } =
+      await supabase.functions.invoke("send-workout-email", {
+        body: {
+          to: client.email,
+          subject: `Your Fitness Portal from ${coachName}`,
+          html: emailHtml,
+        },
+      });
+
+    if (emailError) {
+      return NextResponse.json(
+        { error: "Failed to send email: " + emailError.message },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json({
