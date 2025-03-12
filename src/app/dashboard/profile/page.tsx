@@ -136,23 +136,65 @@ export default function CoachProfilePage() {
 
       // Upload avatar if a new file was selected
       if (selectedFile) {
-        const fileName = `avatar_${user.id}_${Date.now()}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("coach-avatars")
-          .upload(fileName, selectedFile, {
-            upsert: true,
-          });
+        try {
+          // First check if the bucket exists
+          const { data: buckets } = await supabase.storage.listBuckets();
+          const bucketExists = buckets?.some(
+            (bucket) => bucket.name === "coach-avatars",
+          );
 
-        if (uploadError) {
-          throw new Error("Failed to upload avatar: " + uploadError.message);
+          if (!bucketExists) {
+            console.log(
+              "Coach avatars bucket does not exist, using default bucket",
+            );
+            // Use default bucket as fallback
+            const fileName = `avatars/coach_${user.id}_${Date.now()}`;
+            const { data: uploadData, error: uploadError } =
+              await supabase.storage
+                .from("avatars")
+                .upload(fileName, selectedFile, {
+                  upsert: true,
+                });
+
+            if (uploadError) {
+              throw new Error(
+                "Failed to upload avatar: " + uploadError.message,
+              );
+            }
+
+            // Get the public URL
+            const { data: urlData } = supabase.storage
+              .from("avatars")
+              .getPublicUrl(fileName);
+
+            newAvatarUrl = urlData.publicUrl;
+          } else {
+            // Use coach-avatars bucket
+            const fileName = `avatar_${user.id}_${Date.now()}`;
+            const { data: uploadData, error: uploadError } =
+              await supabase.storage
+                .from("coach-avatars")
+                .upload(fileName, selectedFile, {
+                  upsert: true,
+                });
+
+            if (uploadError) {
+              throw new Error(
+                "Failed to upload avatar: " + uploadError.message,
+              );
+            }
+
+            // Get the public URL
+            const { data: urlData } = supabase.storage
+              .from("coach-avatars")
+              .getPublicUrl(fileName);
+
+            newAvatarUrl = urlData.publicUrl;
+          }
+        } catch (uploadErr) {
+          console.error("Error during avatar upload:", uploadErr);
+          throw new Error("Failed to upload avatar. Please try again later.");
         }
-
-        // Get the public URL
-        const { data: urlData } = supabase.storage
-          .from("coach-avatars")
-          .getPublicUrl(fileName);
-
-        newAvatarUrl = urlData.publicUrl;
       }
 
       // Check if profile already exists
@@ -343,6 +385,7 @@ export default function CoachProfilePage() {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Tell your clients about yourself, your background, and your coaching philosophy"
                 rows={5}
+                className="whitespace-pre-wrap"
               />
             </div>
 
@@ -354,6 +397,7 @@ export default function CoachProfilePage() {
                 onChange={(e) => setSpecialties(e.target.value)}
                 placeholder="e.g., Weight Loss, Strength Training, Post-Rehabilitation, Sports Performance"
                 rows={3}
+                className="whitespace-pre-wrap"
               />
             </div>
 
@@ -365,6 +409,7 @@ export default function CoachProfilePage() {
                 onChange={(e) => setCertifications(e.target.value)}
                 placeholder="List your professional certifications and qualifications"
                 rows={3}
+                className="whitespace-pre-wrap"
               />
             </div>
           </CardContent>
@@ -437,7 +482,9 @@ export default function CoachProfilePage() {
                 {specialties ? (
                   <div className="mb-4">
                     <h4 className="font-semibold mb-2">Specialties</h4>
-                    <p className="text-sm text-gray-700">{specialties}</p>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                      {specialties}
+                    </p>
                   </div>
                 ) : null}
 

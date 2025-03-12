@@ -5,6 +5,14 @@ const nextConfig = {
   swcMinify: true,
   // Add transpilePackages for Stripe
   transpilePackages: ["stripe"],
+  images: {
+    domains: [
+      "eubzvoodfjlurwjsrdfy.supabase.co",
+      "images.unsplash.com",
+      "i.imgur.com",
+      "api.dicebear.com",
+    ],
+  },
 };
 
 if (process.env.NEXT_PUBLIC_TEMPO) {

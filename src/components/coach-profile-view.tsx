@@ -84,6 +84,12 @@ export default function CoachProfileView({ coachId }: CoachProfileViewProps) {
                 alt={`${profile.display_name}'s profile picture`}
                 fill
                 className="object-cover"
+                onError={(e) => {
+                  // Fallback if image fails to load
+                  e.currentTarget.src =
+                    "https://api.dicebear.com/7.x/avataaars/svg?seed=" +
+                    profile.display_name;
+                }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-primary/10">
@@ -112,7 +118,9 @@ export default function CoachProfileView({ coachId }: CoachProfileViewProps) {
           {profile?.specialties ? (
             <div className="mb-4">
               <h4 className="font-semibold mb-2">Specialties</h4>
-              <p className="text-sm">{profile.specialties}</p>
+              <p className="text-sm whitespace-pre-wrap">
+                {profile.specialties}
+              </p>
             </div>
           ) : null}
 
