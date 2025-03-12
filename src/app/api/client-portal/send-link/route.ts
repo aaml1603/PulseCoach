@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
 
     // Send email using Supabase Edge Function
     const { data: emailData, error: emailError } =
-      await supabase.functions.invoke("send-workout-email", {
+      await supabase.functions.invoke("supabase-functions-send-workout-email", {
         body: {
           to: client.email,
           subject: `Your Fitness Portal from ${coachName}`,
