@@ -44,6 +44,11 @@ export default async function Signup(props: {
               </p>
             </div>
 
+            <div className="bg-orange-50 border border-orange-200 rounded-md p-3 text-sm text-orange-800 dark:bg-orange-900/20 dark:border-orange-900/50 dark:text-orange-200">
+              <p className="font-medium">Start with a 7-day free trial!</p>
+              <p>Get full access to all features. No credit card required.</p>
+            </div>
+
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="full_name" className="text-sm font-medium">
@@ -94,7 +99,7 @@ export default async function Signup(props: {
               pendingText="Signing up..."
               className="w-full"
             >
-              Sign up
+              Sign up & Start Free Trial
             </SubmitButton>
 
             <FormMessage message={searchParams} />

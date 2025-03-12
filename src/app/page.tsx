@@ -1,4 +1,3 @@
-import Hero from "@/components/hero";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { createClient } from "../../supabase/server";
@@ -10,10 +9,12 @@ import {
   LineChart,
   Bell,
   Users,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PricingButton from "@/components/pricing-button";
 import CTAButton from "@/components/cta-button";
+import Link from "next/link";
 
 // Add structured data for SEO
 const structuredData = {
@@ -47,10 +48,52 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <Navbar user={user} />
-      <Hero />
+
+      {/* Hero Section */}
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            <div className="md:w-1/2 space-y-6">
+              <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-2">
+                Now with 7-day free trial! No credit card required.
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                The Complete{" "}
+                <span className="text-primary">Client Management</span> Platform
+                for Fitness Coaches
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Track client progress, create personalized workout plans, and
+                grow your fitness business with our all-in-one platform.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Button size="lg" className="text-lg" asChild>
+                  <Link href="/sign-up">
+                    Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="text-lg" asChild>
+                  <Link href="#features">Explore Features</Link>
+                </Button>
+              </div>
+            </div>
+            <div className="md:w-1/2 relative">
+              <div className="relative z-10 rounded-xl overflow-hidden shadow-2xl border border-border">
+                <img
+                  src="https://images.unsplash.com/photo-1594882645126-14020914d58d?w=800&q=80"
+                  alt="PulseCoach Dashboard"
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="absolute -bottom-6 -right-6 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10"></div>
+              <div className="absolute -top-6 -left-6 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10"></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-background">
+      <section className="py-24 bg-background" id="features">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">
@@ -480,7 +523,7 @@ export default async function Home() {
           </h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
             Join thousands of fitness professionals who are growing their
-            business and delivering better results to clients. Start your 14-day
+            business and delivering better results to clients. Start your 7-day
             free trial today!
           </p>
           <CTAButton />

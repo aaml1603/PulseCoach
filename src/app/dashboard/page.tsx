@@ -17,6 +17,7 @@ import Link from "next/link";
 import { FadeIn, SlideUp } from "@/components/animations";
 import { FitnessStatsCard } from "@/components/ui/fitness-stats-card";
 import { FitnessProgressRing } from "@/components/ui/fitness-progress-ring";
+import TrialStatus from "@/components/trial-status";
 
 import { getClientAnalytics } from "../actions/analytics";
 
@@ -45,6 +46,7 @@ export default async function Dashboard() {
   return (
     <main className="w-full">
       <div className="flex flex-col gap-8">
+        <TrialStatus />
         {/* Header Section */}
         <SlideUp className="flex flex-col gap-4">
           <h1 className="text-3xl font-bold">Coach Dashboard</h1>

@@ -708,6 +708,8 @@ export type Database = {
           name: string | null
           subscription: string | null
           token_identifier: string
+          trial_end_date: string | null
+          trial_start_date: string | null
           updated_at: string | null
           user_id: string | null
         }
@@ -722,6 +724,8 @@ export type Database = {
           name?: string | null
           subscription?: string | null
           token_identifier: string
+          trial_end_date?: string | null
+          trial_start_date?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -736,6 +740,8 @@ export type Database = {
           name?: string | null
           subscription?: string | null
           token_identifier?: string
+          trial_end_date?: string | null
+          trial_start_date?: string | null
           updated_at?: string | null
           user_id?: string | null
         }

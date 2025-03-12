@@ -27,8 +27,9 @@ export default async function PricingPage({
     "supabase-functions-get-plans",
   );
 
-  // Check if user was redirected due to missing subscription
+  // Check if user was redirected due to missing subscription or trial expiration
   const accessDenied = searchParams.access === "denied";
+  const trialExpired = searchParams.access === "trial_expired";
 
   return (
     <>
@@ -41,6 +42,20 @@ export default async function PricingPage({
             <AlertDescription>
               You need an active subscription to access the dashboard. Please
               subscribe to a plan below.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {trialExpired && (
+          <Alert
+            variant="warning"
+            className="mb-8 max-w-3xl mx-auto bg-orange-50 border-orange-200 text-orange-800"
+          >
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Free Trial Expired</AlertTitle>
+            <AlertDescription>
+              Your 7-day free trial has ended. Subscribe now to continue using
+              all features.
             </AlertDescription>
           </Alert>
         )}

@@ -1,0 +1,2 @@
+[functions.send-workout-email]
+verify_jwt = false

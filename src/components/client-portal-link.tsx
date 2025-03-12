@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Copy, Link2, CheckCircle2, Loader2, Mail } from "lucide-react";
+import { Copy, Link2, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "../../supabase/client";
 
@@ -112,35 +112,7 @@ export default function ClientPortalLink({
     }
   };
 
-  const sendEmailLink = async () => {
-    setIsSendingEmail(true);
-    setError(null);
-    setSuccess(null);
-
-    try {
-      const response = await fetch("/api/client-portal/send-link", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ clientId }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to send email");
-      }
-
-      setSuccess(data.message || "Email sent successfully");
-      // If we sent an email, we should have a new token, so update the URL
-      checkExistingLink();
-    } catch (err: any) {
-      setError(err.message || "Failed to send email");
-    } finally {
-      setIsSendingEmail(false);
-    }
-  };
+  // Email functionality removed
 
   const copyToClipboard = () => {
     if (navigator.clipboard && portalUrl) {
@@ -207,35 +179,13 @@ export default function ClientPortalLink({
               </Link>
               .
             </p>
-            {hasEmail ? (
-              <Button
-                onClick={sendEmailLink}
-                disabled={isSendingEmail}
-                className="w-full"
-              >
-                {isSendingEmail ? (
-                  "Sending Email..."
-                ) : (
-                  <>
-                    <Mail className="mr-2 h-4 w-4" /> Send Portal Link via Email
-                  </>
-                )}
-              </Button>
-            ) : (
-              <>
-                <div className="bg-amber-50 text-amber-600 p-3 rounded-md text-sm mb-4">
-                  This client doesn't have an email address. You'll need to
-                  share the link manually.
-                </div>
-                <Button
-                  onClick={generateLink}
-                  disabled={isLoading}
-                  className="w-full"
-                >
-                  {isLoading ? "Generating..." : "Generate Access Link"}
-                </Button>
-              </>
-            )}
+            <Button
+              onClick={generateLink}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? "Generating..." : "Generate Access Link"}
+            </Button>
           </div>
         ) : (
           <div className="grid gap-4 py-4">
@@ -267,34 +217,17 @@ export default function ClientPortalLink({
               assigned workouts without needing to create an account.
             </p>
 
-            {hasEmail && (
-              <Button
-                onClick={sendEmailLink}
-                disabled={isSendingEmail}
-                className="w-full mt-2"
-                variant="outline"
-              >
-                {isSendingEmail ? (
-                  "Sending Email..."
-                ) : (
-                  <>
-                    <Mail className="mr-2 h-4 w-4" /> Send Link via Email
-                  </>
-                )}
-              </Button>
-            )}
+            {/* Email functionality removed */}
 
             <div className="mt-2">
               <Button
-                onClick={hasEmail ? sendEmailLink : generateLink}
-                disabled={isLoading || isSendingEmail}
+                onClick={generateLink}
+                disabled={isLoading}
                 variant="destructive"
                 size="sm"
                 className="w-full"
               >
-                {isLoading || isSendingEmail
-                  ? "Processing..."
-                  : "Regenerate Link"}
+                {isLoading ? "Processing..." : "Regenerate Link"}
               </Button>
               <p className="text-xs text-muted-foreground mt-1">
                 <span className="text-amber-600 font-medium">Warning:</span>{" "}

@@ -1,0 +1,4 @@
+# This configuration disables JWT verification for this function
+# allowing it to be called without authentication
+[global]
+verify_jwt = false

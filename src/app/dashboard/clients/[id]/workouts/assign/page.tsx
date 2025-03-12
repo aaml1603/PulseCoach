@@ -108,7 +108,7 @@ export default function AssignWorkoutPage({
         throw insertError;
       }
 
-      // Get the workout name for the email
+      // Get the workout name for the success message
       const selectedWorkoutData = workouts.find(
         (w) => w.id === selectedWorkout,
       );

@@ -41,6 +41,11 @@ export const signUpAction = async (formData: FormData) => {
 
   if (user) {
     try {
+      // Set trial dates (7 days from now)
+      const trialStartDate = new Date();
+      const trialEndDate = new Date();
+      trialEndDate.setDate(trialEndDate.getDate() + 7);
+
       const { error: updateError } = await supabase.from("users").insert({
         id: user.id,
         user_id: user.id,
@@ -48,6 +53,8 @@ export const signUpAction = async (formData: FormData) => {
         email: email,
         token_identifier: user.id,
         created_at: new Date().toISOString(),
+        trial_start_date: trialStartDate.toISOString(),
+        trial_end_date: trialEndDate.toISOString(),
       });
 
       if (updateError) {
@@ -181,6 +188,27 @@ export const checkUserSubscription = async (userId: string) => {
     .in("status", ["active", "trialing", "incomplete"])
     .single();
 
-  // For development purposes, return true if there's any subscription record
-  return !!anySubscription;
+  if (anySubscription) {
+    return true;
+  }
+
+  // Check if user is within free trial period
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("trial_start_date, trial_end_date")
+    .eq("id", userId)
+    .single();
+
+  if (userData?.trial_end_date) {
+    const trialEndDate = new Date(userData.trial_end_date);
+    const now = new Date();
+
+    // If trial end date is in the future, user has an active trial
+    if (trialEndDate > now) {
+      return true;
+    }
+  }
+
+  // No active subscription or trial
+  return false;
 };

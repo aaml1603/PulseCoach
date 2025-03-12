@@ -22,9 +22,28 @@ export default async function DashboardLayout({
   // Check if user has an active subscription
   const hasSubscription = await checkUserSubscription(user.id);
 
-  // If no subscription, redirect to pricing page
+  // Check if user has an active trial
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("trial_start_date, trial_end_date")
+    .eq("id", user.id)
+    .single();
+
+  // If no subscription, check if trial is still valid
   if (!hasSubscription) {
-    return redirect("/pricing?access=denied");
+    // If user has trial data and trial end date is in the future, allow access
+    if (userData?.trial_end_date) {
+      const trialEndDate = new Date(userData.trial_end_date);
+      const now = new Date();
+
+      if (trialEndDate <= now) {
+        // Trial has expired, redirect to pricing
+        return redirect("/pricing?access=trial_expired");
+      }
+    } else {
+      // No subscription and no trial, redirect to pricing
+      return redirect("/pricing?access=denied");
+    }
   }
 
   return (
