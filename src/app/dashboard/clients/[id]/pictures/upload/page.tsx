@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { createClient } from "../../../../../../../supabase/client";
-import { ArrowLeft, Upload, ImageIcon, X } from "lucide-react";
+import { ArrowLeft, Upload, ImageIcon, X, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -28,7 +28,6 @@ export default function UploadProgressPicturePage({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [clientData, setClientData] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [notes, setNotes] = useState<string>("");
@@ -83,9 +82,33 @@ export default function UploadProgressPicturePage({
 
       // Upload the image to Supabase Storage
       const fileName = `${Date.now()}_${selectedFile.name.replace(/\s+/g, "_")}`;
+      const filePath = `${params.id}/${fileName}`;
+
+      // First check if the bucket exists
+      const { data: buckets } = await supabase.storage.listBuckets();
+      const bucketExists = buckets?.some(
+        (bucket) => bucket.name === "progress-pictures",
+      );
+
+      if (!bucketExists) {
+        // Try to create the bucket if it doesn't exist
+        try {
+          await fetch("/api/create-storage-bucket", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ bucketName: "progress-pictures" }),
+          });
+        } catch (err) {
+          console.log("Error creating bucket, will try upload anyway");
+        }
+      }
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("progress-pictures")
-        .upload(`${params.id}/${fileName}`, selectedFile);
+        .upload(filePath, selectedFile, {
+          upsert: true,
+          cacheControl: "3600",
+        });
 
       if (uploadError) {
         throw new Error("Failed to upload image: " + uploadError.message);
@@ -94,7 +117,11 @@ export default function UploadProgressPicturePage({
       // Get the public URL for the uploaded image
       const { data: urlData } = supabase.storage
         .from("progress-pictures")
-        .getPublicUrl(`${params.id}/${fileName}`);
+        .getPublicUrl(filePath);
+
+      if (!urlData.publicUrl) {
+        throw new Error("Failed to get public URL for the uploaded image");
+      }
 
       // Save the progress picture record in the database
       const { error: insertError } = await supabase
@@ -152,8 +179,12 @@ export default function UploadProgressPicturePage({
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-6">
             {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-                {error}
+              <div className="bg-red-50 text-red-600 p-4 rounded-md text-sm flex items-start">
+                <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">Error</p>
+                  <p>{error}</p>
+                </div>
               </div>
             )}
             {success && (

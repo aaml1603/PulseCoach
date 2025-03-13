@@ -914,7 +914,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_storage_bucket: {
+        Args: {
+          bucket_name: string
+          is_public?: boolean
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
