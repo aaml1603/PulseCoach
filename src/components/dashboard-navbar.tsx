@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { UserCircle, Home, Dumbbell, Menu, X, LogOut } from "lucide-react";
+import { UserCircle, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import NotificationBell from "./notification-bell";
@@ -24,11 +24,11 @@ export default function DashboardNavbar() {
     <nav className="w-full border-b border-border bg-background/80 backdrop-blur-md py-4 sticky top-0 z-50">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href="/" prefetch className="flex items-center gap-2">
+          <Link href="/dashboard" prefetch className="flex items-center gap-2">
             <div className="h-10 w-10 relative hover:rotate-12 transition-transform group">
               <img
                 src="https://i.imgur.com/xFQGdgC.png"
-                alt="FitCoach Logo"
+                alt="PulseCoach Logo"
                 className="h-full w-full object-contain group-hover:animate-heartbeat"
               />
             </div>
@@ -60,6 +60,12 @@ export default function DashboardNavbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/billing">Billing</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={async () => {
                   await supabase.auth.signOut();
@@ -80,6 +86,12 @@ export default function DashboardNavbar() {
             <ThemeToggle />
             <NotificationBell />
           </div>
+          <Button variant="outline" className="w-full justify-start" asChild>
+            <Link href="/dashboard/profile">
+              <UserCircle className="mr-2 h-4 w-4" />
+              Profile
+            </Link>
+          </Button>
           <Button
             variant="outline"
             className="w-full justify-start"

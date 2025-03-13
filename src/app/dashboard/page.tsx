@@ -136,31 +136,23 @@ export default async function Dashboard() {
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Button
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
-                asChild
-              >
+              <Button className="w-full bg-blue-600 hover:bg-blue-700" asChild>
                 <Link href="/dashboard/clients/new">Add New Client</Link>
               </Button>
-              <Button className="w-full" variant="outline" asChild>
+              <Button className="w-full bg-gray-800 hover:bg-gray-900" asChild>
                 <Link href="/dashboard/workouts">Manage Workouts</Link>
               </Button>
-              <Button className="w-full" variant="secondary" asChild>
+              <Button className="w-full bg-gray-900 hover:bg-gray-950" asChild>
                 <Link href="/dashboard/clients">View All Clients</Link>
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <Button className="w-full" variant="outline" asChild>
+              <Button className="w-full bg-gray-800 hover:bg-gray-900" asChild>
                 <Link href="/dashboard/exercises/new">Create Exercise</Link>
               </Button>
-              <div className="grid grid-cols-2 gap-4">
-                <Button className="w-full" variant="outline" asChild>
-                  <Link href="/dashboard/profile">Update Profile</Link>
-                </Button>
-                <Button className="w-full" variant="outline" asChild>
-                  <Link href="/dashboard/admin/debug-email">Debug Email</Link>
-                </Button>
-              </div>
+              <Button className="w-full bg-gray-800 hover:bg-gray-900" asChild>
+                <Link href="/dashboard/profile">Update Profile</Link>
+              </Button>
             </div>
           </SlideUp>
 
