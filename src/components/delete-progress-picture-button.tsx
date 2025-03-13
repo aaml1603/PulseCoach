@@ -51,11 +51,12 @@ export default function DeleteProgressPictureButton({
         );
       }
 
-      // Try to delete the file from storage if URL exists
+      // Try to delete the file from storage if URL exists and is not an external URL
       if (
         picture &&
         picture.image_url &&
-        !picture.image_url.includes("unsplash.com")
+        !picture.image_url.includes("unsplash.com") &&
+        !picture.image_url.includes("images.unsplash.com")
       ) {
         try {
           // Check if the bucket exists first
@@ -69,15 +70,43 @@ export default function DeleteProgressPictureButton({
               // Extract the path from the URL
               const url = new URL(picture.image_url);
               const pathParts = url.pathname.split("/");
-              const storagePath =
-                pathParts[pathParts.length - 2] +
-                "/" +
-                pathParts[pathParts.length - 1];
+
+              // Get the client ID and filename from the path
+              // The format is typically /storage/v1/object/public/progress-pictures/clientId/filename
+              let storagePath = "";
+
+              // Find the index of 'progress-pictures' in the path
+              const bucketIndex = pathParts.findIndex(
+                (part) => part === "progress-pictures",
+              );
+
+              if (bucketIndex !== -1 && bucketIndex + 2 < pathParts.length) {
+                // Extract the client ID and filename
+                storagePath =
+                  pathParts[bucketIndex + 1] + "/" + pathParts[bucketIndex + 2];
+              } else {
+                // Fallback to the old method if the path structure is different
+                storagePath =
+                  pathParts[pathParts.length - 2] +
+                  "/" +
+                  pathParts[pathParts.length - 1];
+              }
+
+              console.log("Deleting file from storage path:", storagePath);
 
               // Delete the file from storage
-              await supabase.storage
+              const { data, error: storageDeleteError } = await supabase.storage
                 .from("progress-pictures")
                 .remove([storagePath]);
+
+              if (storageDeleteError) {
+                console.warn(
+                  "Error deleting file from storage:",
+                  storageDeleteError,
+                );
+              } else {
+                console.log("File deleted successfully from storage", data);
+              }
             } catch (storageError) {
               console.warn("Error deleting file from storage:", storageError);
               // Continue with database deletion even if storage deletion fails
