@@ -1,6 +1,8 @@
 import { createClient } from "../../../../../supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
+import { sendEmail } from "@/lib/sendgrid";
+import { getPortalInviteTemplate } from "@/lib/email-templates";
 
 export async function POST(request: NextRequest) {
   try {
@@ -86,55 +88,49 @@ export async function POST(request: NextRequest) {
 
     const portalUrl = `${baseUrl}/client-portal/${accessToken}`;
 
-    // Create email content
-    const subject = "Your Personal Training Portal Access";
-    const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Welcome to Your Personal Training Portal</h2>
-        <p>Hello ${client.name},</p>
-        <p>${coachName} has invited you to access your personal training portal where you can view your workouts, track your progress, and communicate directly.</p>
-        <p>Click the button below to access your portal:</p>
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${portalUrl}" style="background-color: #FF5733; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Access Your Portal</a>
-        </div>
-        <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
-        <p style="word-break: break-all; color: #3b82f6;">${portalUrl}</p>
-        <p>This link is valid for 90 days and is unique to you. Please don't share it with others.</p>
-      </div>
-    `;
-    const text = `Hello ${client.name}, ${coachName} has invited you to access your personal training portal. Access your portal here: ${portalUrl}`;
-
-    // Send the email using our email API route
-    const emailResponse = await fetch(`${request.nextUrl.origin}/api/email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        to: client.email,
-        subject,
-        html,
-        text,
-      }),
-    });
-
-    const emailData = await emailResponse.json();
-
-    if (!emailResponse.ok) {
+    // Check if SendGrid API key is configured
+    if (!process.env.SENDGRID_API_KEY) {
       return NextResponse.json(
-        {
-          error:
-            "Failed to send email: " + (emailData.error || "Unknown error"),
-        },
+        { error: "SendGrid API key is not configured" },
         { status: 500 },
       );
     }
+
+    // Create email content for portal invite using the template
+    const subject = "Your Personal Training Portal Access";
+    const html = getPortalInviteTemplate(
+      client.name,
+      coachName,
+      portalUrl,
+      client.email,
+    );
+    const text = `Hello ${client.name}, ${coachName} has invited you to access your personal training portal. Access your portal here: ${portalUrl}. This link is valid for 90 days and is unique to you.`;
+
+    // Send email using SendGrid with improved deliverability
+    await sendEmail(client.email, subject, html, text);
 
     return NextResponse.json({
       success: true,
       message: `Portal link sent to ${client.email}`,
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Error sending portal link:", error);
+
+    // Extract SendGrid specific error details if available
+    const errorDetails = error.response
+      ? {
+          statusCode: error.response.statusCode,
+          body: error.response.body,
+          headers: error.response.headers,
+        }
+      : undefined;
+
+    return NextResponse.json(
+      {
+        error: `Failed to send email: ${error.message}`,
+        details: errorDetails,
+      },
+      { status: 500 },
+    );
   }
 }

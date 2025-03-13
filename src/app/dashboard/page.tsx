@@ -153,9 +153,14 @@ export default async function Dashboard() {
               <Button className="w-full" variant="outline" asChild>
                 <Link href="/dashboard/exercises/new">Create Exercise</Link>
               </Button>
-              <Button className="w-full" variant="outline" asChild>
-                <Link href="/dashboard/profile">Update Profile</Link>
-              </Button>
+              <div className="grid grid-cols-2 gap-4">
+                <Button className="w-full" variant="outline" asChild>
+                  <Link href="/dashboard/profile">Update Profile</Link>
+                </Button>
+                <Button className="w-full" variant="outline" asChild>
+                  <Link href="/dashboard/admin/debug-email">Debug Email</Link>
+                </Button>
+              </div>
             </div>
           </SlideUp>
 

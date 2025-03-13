@@ -10,6 +10,10 @@ import {
   Bell,
   Users,
   ArrowRight,
+  BarChart3,
+  Layers,
+  MessageSquare,
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PricingButton from "@/components/pricing-button";
@@ -50,43 +54,59 @@ export default async function Home() {
       <Navbar user={user} />
 
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
+      <section className="relative py-24 md:py-36 overflow-hidden border-b border-border/40">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="md:w-1/2 space-y-6">
-              <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-2">
-                Now with 7-day free trial! No credit card required.
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                The Complete{" "}
-                <span className="text-primary">Client Management</span> Platform
-                for Fitness Coaches
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Track client progress, create personalized workout plans, and
-                grow your fitness business with our all-in-one platform.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button size="lg" className="text-lg" asChild>
-                  <Link href="/sign-up">
-                    Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" className="text-lg" asChild>
-                  <Link href="#features">Explore Features</Link>
-                </Button>
+          <div className="max-w-3xl mx-auto text-center space-y-6">
+            <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-2">
+              Now with 7-day free trial! No credit card required.
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              The Complete{" "}
+              <span className="text-primary">Client Management</span> Platform
+              for Fitness Coaches
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Track client progress, create personalized workout plans, and grow
+              your fitness business with our all-in-one platform.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
+              <Button size="lg" className="text-lg" asChild>
+                <Link href="/sign-up">
+                  Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg" asChild>
+                <Link href="#features">Explore Features</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="absolute inset-0 -z-10 h-full w-full bg-white dark:bg-black bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-20"></div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 bg-background border-b border-border/40">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+            <div className="p-6 rounded-xl bg-muted/30">
+              <div className="text-4xl font-bold mb-2 text-primary">5,000+</div>
+              <div className="text-muted-foreground font-medium">
+                Active Coaches
               </div>
             </div>
-            <div className="md:w-1/2 relative">
-              <div className="relative z-10 rounded-xl overflow-hidden shadow-2xl border border-border">
-                <img
-                  src="https://images.unsplash.com/photo-1594882645126-14020914d58d?w=800&q=80"
-                  alt="PulseCoach Dashboard"
-                  className="w-full h-auto"
-                />
+            <div className="p-6 rounded-xl bg-muted/30">
+              <div className="text-4xl font-bold mb-2 text-primary">
+                50,000+
               </div>
-              <div className="absolute -bottom-6 -right-6 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10"></div>
-              <div className="absolute -top-6 -left-6 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10"></div>
+              <div className="text-muted-foreground font-medium">
+                Clients Managed
+              </div>
+            </div>
+            <div className="p-6 rounded-xl bg-muted/30">
+              <div className="text-4xl font-bold mb-2 text-primary">98%</div>
+              <div className="text-muted-foreground font-medium">
+                Client Retention Rate
+              </div>
             </div>
           </div>
         </div>
@@ -112,80 +132,43 @@ export default async function Home() {
                 title: "Client Management",
                 description:
                   "Easily organize and track all your clients in one place with custom profiles and detailed history",
-                image:
-                  "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80",
               },
               {
                 icon: <Dumbbell className="w-6 h-6" />,
                 title: "Workout Builder",
                 description:
                   "Create custom workout plans with our intuitive exercise library featuring over 500+ exercises",
-                image:
-                  "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80",
               },
               {
                 icon: <LineChart className="w-6 h-6" />,
                 title: "Progress Tracking",
                 description:
                   "Monitor client metrics with interactive charts, body measurements, and progress photos",
-                image:
-                  "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=600&q=80",
               },
               {
                 icon: <Bell className="w-6 h-6" />,
                 title: "Smart Notifications",
                 description:
                   "Automated alerts for milestones, missed workouts, and client feedback in real-time",
-                image:
-                  "https://images.unsplash.com/photo-1594882645126-14020914d58d?w=600&q=80",
               },
             ].map((feature, index) => (
               <div
                 key={index}
-                className="p-6 bg-card rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col"
+                className="p-8 bg-card rounded-xl shadow-sm hover:shadow-md transition-shadow border border-border/40 flex flex-col h-full"
               >
-                <div className="text-orange-500 mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground mb-4">
-                  {feature.description}
-                </p>
-                {feature.image && (
-                  <div className="mt-auto rounded-lg overflow-hidden h-40 w-full">
-                    <img
-                      src={feature.image}
-                      alt={feature.title}
-                      className="w-full h-full object-cover transition-transform hover:scale-105"
-                    />
-                  </div>
-                )}
+                <div className="bg-primary/10 text-primary p-3 rounded-lg w-fit mb-6">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-orange-500 text-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold mb-2">5,000+</div>
-              <div className="text-orange-100">Active Coaches</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">50,000+</div>
-              <div className="text-orange-100">Clients Managed</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">98%</div>
-              <div className="text-orange-100">Client Retention Rate</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* How It Works Section */}
-      <section className="py-24 bg-background">
+      <section className="py-24 bg-muted/20 border-y border-border/40">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
@@ -195,17 +178,10 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <span className="text-orange-600 text-2xl font-bold">1</span>
-              </div>
-              <div className="rounded-lg overflow-hidden h-48 mb-6">
-                <img
-                  src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&q=80"
-                  alt="Add clients"
-                  className="w-full h-full object-cover"
-                />
+          <div className="grid sm:grid-cols-3 gap-12 max-w-5xl mx-auto">
+            <div className="bg-card p-8 rounded-xl border border-border/40 shadow-sm">
+              <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center mb-6">
+                <span className="text-primary text-xl font-bold">1</span>
               </div>
               <h3 className="text-xl font-semibold mb-3">Add Your Clients</h3>
               <p className="text-muted-foreground">
@@ -213,16 +189,9 @@ export default async function Home() {
                 them into groups with custom tags and categories
               </p>
             </div>
-            <div className="text-center">
-              <div className="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <span className="text-orange-600 text-2xl font-bold">2</span>
-              </div>
-              <div className="rounded-lg overflow-hidden h-48 mb-6">
-                <img
-                  src="https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=500&q=80"
-                  alt="Create workout plans"
-                  className="w-full h-full object-cover"
-                />
+            <div className="bg-card p-8 rounded-xl border border-border/40 shadow-sm">
+              <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center mb-6">
+                <span className="text-primary text-xl font-bold">2</span>
               </div>
               <h3 className="text-xl font-semibold mb-3">
                 Create Workout Plans
@@ -232,16 +201,9 @@ export default async function Home() {
                 exercise library with video demonstrations
               </p>
             </div>
-            <div className="text-center">
-              <div className="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <span className="text-orange-600 text-2xl font-bold">3</span>
-              </div>
-              <div className="rounded-lg overflow-hidden h-48 mb-6">
-                <img
-                  src="https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=500&q=80"
-                  alt="Track progress"
-                  className="w-full h-full object-cover"
-                />
+            <div className="bg-card p-8 rounded-xl border border-border/40 shadow-sm">
+              <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center mb-6">
+                <span className="text-primary text-xl font-bold">3</span>
               </div>
               <h3 className="text-xl font-semibold mb-3">Track Progress</h3>
               <p className="text-muted-foreground">
@@ -253,8 +215,82 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Advanced Features Section */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Advanced Features</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Discover the powerful tools that make PulseCoach the preferred
+              platform for fitness professionals worldwide
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                icon: <MessageSquare className="h-5 w-5" />,
+                title: "Client Portal Access",
+                description:
+                  "Provide clients with their own secure portal to view workouts, log progress, and communicate with you directly",
+              },
+              {
+                icon: <Layers className="h-5 w-5" />,
+                title: "Progress Photo Tracking",
+                description:
+                  "Securely store and compare client progress photos to visually demonstrate transformation over time",
+              },
+              {
+                icon: <BarChart3 className="h-5 w-5" />,
+                title: "Comprehensive Metrics",
+                description:
+                  "Track weight, body measurements, body fat percentage, and custom metrics with beautiful visualization tools",
+              },
+              {
+                icon: <Bell className="h-5 w-5" />,
+                title: "Real-time Notifications",
+                description:
+                  "Get instant alerts when clients complete workouts, provide feedback, or reach important milestones",
+              },
+              {
+                icon: <Dumbbell className="h-5 w-5" />,
+                title: "Exercise Library",
+                description:
+                  "Access 500+ pre-loaded exercises with detailed instructions, or create custom exercises for your unique training methods",
+              },
+              {
+                icon: <Shield className="h-5 w-5" />,
+                title: "Dark Mode Support",
+                description:
+                  "Enjoy a comfortable viewing experience in any lighting condition with our beautiful dark mode interface",
+              },
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="flex gap-4 items-start bg-card p-6 rounded-xl border border-border/40 shadow-sm"
+              >
+                <div className="bg-primary/10 p-2 rounded-lg text-primary">
+                  {feature.icon}
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
-      <section className="py-24 bg-muted/30" id="pricing">
+      <section
+        className="py-24 bg-muted/20 border-y border-border/40"
+        id="pricing"
+      >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">
@@ -267,7 +303,7 @@ export default async function Home() {
           </div>
           <div className="flex flex-col items-center justify-center max-w-md mx-auto">
             <div className="w-full bg-card border border-primary/20 rounded-xl overflow-hidden shadow-md">
-              <div className="bg-orange-500 text-white text-center py-3 px-4">
+              <div className="bg-primary text-white text-center py-3 px-4">
                 <h3 className="text-xl font-medium">Recommended Plan</h3>
               </div>
 
@@ -279,36 +315,36 @@ export default async function Home() {
 
                 <div className="space-y-4 mt-8 text-left">
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-orange-100 p-1">
-                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
                     </div>
                     <span>Unlimited clients</span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-orange-100 p-1">
-                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
                     </div>
                     <span>Advanced analytics</span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-orange-100 p-1">
-                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
                     </div>
                     <span>Priority support</span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-orange-100 p-1">
-                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
                     </div>
                     <span>Custom workout builder</span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-orange-100 p-1">
-                      <CheckCircle2 className="h-5 w-5 text-orange-500" />
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
                     </div>
                     <span>Client portal access</span>
                   </div>
@@ -336,187 +372,58 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-card p-6 rounded-xl shadow-sm border border-border">
-              <div className="flex items-center mb-4">
-                <div className="h-12 w-12 rounded-full overflow-hidden mr-4">
-                  <img
-                    src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&q=80"
-                    alt="John Miller"
-                    className="w-full h-full object-cover"
-                  />
+          <div className="grid sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                name: "John Miller",
+                role: "Personal Trainer, NYC",
+                quote:
+                  "This platform has completely transformed how I manage my clients. The workout builder saves me hours each week, and my clients love the progress tracking features. I've grown my client base by 40% in just 3 months!",
+              },
+              {
+                name: "Sarah Johnson",
+                role: "Fitness Studio Owner",
+                quote:
+                  "Managing 50+ clients used to be a nightmare. Now I can see everyone's progress at a glance and provide better coaching with less administrative work. The client portal feature has revolutionized how we communicate with clients.",
+              },
+              {
+                name: "David Parker",
+                role: "Online Fitness Coach",
+                quote:
+                  "The analytics tools have helped me identify patterns in client progress that I never would have noticed otherwise. My retention rate has increased by 35% since I started using this platform, and the progress photo feature is a game-changer!",
+              },
+            ].map((testimonial, index) => (
+              <div
+                key={index}
+                className="bg-card p-8 rounded-xl shadow-sm border border-border/40 flex flex-col h-full"
+              >
+                <div className="mb-6">
+                  <svg
+                    className="h-8 w-8 text-primary/40"
+                    fill="currentColor"
+                    viewBox="0 0 32 32"
+                    aria-hidden="true"
+                  >
+                    <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+                  </svg>
                 </div>
-                <div>
-                  <h4 className="font-medium">John Miller</h4>
+                <p className="text-muted-foreground italic flex-grow">
+                  "{testimonial.quote}"
+                </p>
+                <div className="mt-6 pt-6 border-t border-border/40">
+                  <p className="font-medium">{testimonial.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    Personal Trainer, NYC
+                    {testimonial.role}
                   </p>
                 </div>
               </div>
-              <p className="text-muted-foreground italic">
-                "This platform has completely transformed how I manage my
-                clients. The workout builder saves me hours each week, and my
-                clients love the progress tracking features. I've grown my
-                client base by 40% in just 3 months!"
-              </p>
-            </div>
-
-            <div className="bg-card p-6 rounded-xl shadow-sm border border-border">
-              <div className="flex items-center mb-4">
-                <div className="h-12 w-12 rounded-full overflow-hidden mr-4">
-                  <img
-                    src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&q=80"
-                    alt="Sarah Johnson"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h4 className="font-medium">Sarah Johnson</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Fitness Studio Owner
-                  </p>
-                </div>
-              </div>
-              <p className="text-muted-foreground italic">
-                "Managing 50+ clients used to be a nightmare. Now I can see
-                everyone's progress at a glance and provide better coaching with
-                less administrative work. The client portal feature has
-                revolutionized how we communicate with clients."
-              </p>
-            </div>
-
-            <div className="bg-card p-6 rounded-xl shadow-sm border border-border">
-              <div className="flex items-center mb-4">
-                <div className="h-12 w-12 rounded-full overflow-hidden mr-4">
-                  <img
-                    src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=100&q=80"
-                    alt="David Parker"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h4 className="font-medium">David Parker</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Online Fitness Coach
-                  </p>
-                </div>
-              </div>
-              <p className="text-muted-foreground italic">
-                "The analytics tools have helped me identify patterns in client
-                progress that I never would have noticed otherwise. My retention
-                rate has increased by 35% since I started using this platform,
-                and the progress photo feature is a game-changer!"
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Additional Features Section */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Advanced Features</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Discover the powerful tools that make PulseCoach the preferred
-              platform for fitness professionals worldwide
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <div className="flex gap-6 items-start">
-              <div className="bg-orange-100 p-3 rounded-full flex-shrink-0">
-                <CheckCircle2 className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">
-                  Client Portal Access
-                </h3>
-                <p className="text-muted-foreground">
-                  Provide clients with their own secure portal to view workouts,
-                  log progress, and communicate with you directly
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-6 items-start">
-              <div className="bg-orange-100 p-3 rounded-full flex-shrink-0">
-                <CheckCircle2 className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">
-                  Progress Photo Tracking
-                </h3>
-                <p className="text-muted-foreground">
-                  Securely store and compare client progress photos to visually
-                  demonstrate transformation over time
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-6 items-start">
-              <div className="bg-orange-100 p-3 rounded-full flex-shrink-0">
-                <CheckCircle2 className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">
-                  Comprehensive Metrics
-                </h3>
-                <p className="text-muted-foreground">
-                  Track weight, body measurements, body fat percentage, and
-                  custom metrics with beautiful visualization tools
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-6 items-start">
-              <div className="bg-orange-100 p-3 rounded-full flex-shrink-0">
-                <CheckCircle2 className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">
-                  Real-time Notifications
-                </h3>
-                <p className="text-muted-foreground">
-                  Get instant alerts when clients complete workouts, provide
-                  feedback, or reach important milestones
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-6 items-start">
-              <div className="bg-orange-100 p-3 rounded-full flex-shrink-0">
-                <CheckCircle2 className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Exercise Library</h3>
-                <p className="text-muted-foreground">
-                  Access 500+ pre-loaded exercises with detailed instructions,
-                  or create custom exercises for your unique training methods
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-6 items-start">
-              <div className="bg-orange-100 p-3 rounded-full flex-shrink-0">
-                <CheckCircle2 className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">
-                  Dark Mode Support
-                </h3>
-                <p className="text-muted-foreground">
-                  Enjoy a comfortable viewing experience in any lighting
-                  condition with our beautiful dark mode interface
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-muted/20 border-t border-border/40">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
             Ready to Transform Your Coaching Business?

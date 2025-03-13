@@ -1,5 +1,7 @@
 import { createClient } from "../../../../supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { sendEmail } from "@/lib/sendgrid";
+import { getWorkoutAssignedTemplate } from "@/lib/email-templates";
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,52 +34,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create email content
-    const subject = `New Workout Assigned: ${workoutName}`;
-    const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Workout Assigned</h2>
-        <p>Hello ${client.name},</p>
-        <p>Your coach has assigned you a new workout: <strong>${workoutName}</strong></p>
-        <p>You can view and track your workout by clicking the button below:</p>
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${portalUrl}" style="background-color: #FF5733; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">View Your Workout</a>
-        </div>
-        <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
-        <p style="word-break: break-all; color: #3b82f6;">${portalUrl}</p>
-        <p>Thank you for using PulseCoach!</p>
-      </div>
-    `;
-    const text = `Hello ${client.name}, your coach has assigned you a new workout: ${workoutName}. View your workout here: ${portalUrl}`;
-
-    // Send the email using our email API route
-    const emailResponse = await fetch(`${request.nextUrl.origin}/api/email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        to: client.email,
-        subject,
-        html,
-        text,
-      }),
-    });
-
-    const emailData = await emailResponse.json();
-
-    if (!emailResponse.ok) {
+    // Check if SendGrid API key is configured
+    if (!process.env.SENDGRID_API_KEY) {
       return NextResponse.json(
-        {
-          error:
-            "Failed to send email: " + (emailData.error || "Unknown error"),
-        },
+        { error: "SendGrid API key is not configured" },
         { status: 500 },
       );
     }
 
-    return NextResponse.json({ success: true });
+    // Create email content using the template
+    const subject = `New Workout Assigned: ${workoutName}`;
+    const html = getWorkoutAssignedTemplate(
+      client.name,
+      workoutName,
+      portalUrl,
+      client.email,
+    );
+    const text = `Hello ${client.name}, your coach has assigned you a new workout: ${workoutName}. View your workout here: ${portalUrl}`;
+
+    // Send email using SendGrid with improved deliverability
+    await sendEmail(client.email, subject, html, text);
+
+    return NextResponse.json({
+      success: true,
+      message: `Workout email sent to ${client.email}`,
+    });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Error sending workout email:", error);
+
+    // Extract SendGrid specific error details if available
+    const errorDetails = error.response
+      ? {
+          statusCode: error.response.statusCode,
+          body: error.response.body,
+          headers: error.response.headers,
+        }
+      : undefined;
+
+    return NextResponse.json(
+      {
+        error: `Failed to send email: ${error.message}`,
+        details: errorDetails,
+      },
+      { status: 500 },
+    );
   }
 }

@@ -7,7 +7,10 @@ export async function POST(request: NextRequest) {
     const { email } = await request.json();
 
     if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email address is required" },
+        { status: 400 },
+      );
     }
 
     // Check if SendGrid API key is configured
@@ -19,10 +22,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Create test email content using the template
-    const subject = "PulseCoach Test Email";
+    const subject = "Email Debug Test";
     const html = getTestEmailTemplate(email);
     const text =
-      "This is a test email from PulseCoach. If you're seeing this, email sending is working correctly.";
+      "This is a test email to verify that the email sending functionality is working correctly.";
 
     // Send email using SendGrid with improved deliverability
     await sendEmail(email, subject, html, text);
@@ -31,10 +34,9 @@ export async function POST(request: NextRequest) {
       success: true,
       message: `Test email sent to ${email}`,
       provider: "sendgrid",
-      fromEmail: process.env.SENDGRID_FROM_EMAIL || "noreply@pulsecoach.com",
     });
   } catch (error: any) {
-    console.error("Test email error:", error);
+    console.error("Debug email error:", error);
 
     // Extract SendGrid specific error details if available
     const errorDetails = error.response
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: `Test email error: ${error.message}`,
+        error: `Debug email error: ${error.message}`,
         details: errorDetails,
       },
       { status: 500 },

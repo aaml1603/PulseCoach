@@ -397,6 +397,36 @@ export type Database = {
           },
         ]
       }
+      email_templates: {
+        Row: {
+          created_at: string | null
+          html_content: string
+          id: string
+          name: string
+          subject: string
+          text_content: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          html_content: string
+          id?: string
+          name: string
+          subject: string
+          text_content: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          html_content?: string
+          id?: string
+          name?: string
+          subject?: string
+          text_content?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       exercises: {
         Row: {
           category: string | null

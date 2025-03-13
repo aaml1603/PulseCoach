@@ -112,7 +112,33 @@ export default function ClientPortalLink({
     }
   };
 
-  // Email functionality removed
+  const sendEmailLink = async () => {
+    setIsSendingEmail(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch("/api/client-portal/send-link", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ clientId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send email");
+      }
+
+      setSuccess(data.message || "Portal link sent successfully");
+    } catch (err: any) {
+      setError(err.message || "An error occurred while sending the email");
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
 
   const copyToClipboard = () => {
     if (navigator.clipboard && portalUrl) {
@@ -217,7 +243,18 @@ export default function ClientPortalLink({
               assigned workouts without needing to create an account.
             </p>
 
-            {/* Email functionality removed */}
+            {hasEmail && (
+              <div className="mt-4">
+                <Button
+                  onClick={sendEmailLink}
+                  disabled={isSendingEmail}
+                  variant="outline"
+                  className="w-full"
+                >
+                  {isSendingEmail ? "Sending..." : "Send Link via Email"}
+                </Button>
+              </div>
+            )}
 
             <div className="mt-2">
               <Button

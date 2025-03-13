@@ -245,12 +245,12 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Mark messages as read
+    // Mark messages as read - ensure coach can only mark their own messages
     const { error: updateError } = await supabase
       .from("messages")
       .update({ is_read: true })
       .in("id", messageIds)
-      .eq("coach_id", user.id); // Ensure coach can only mark their own messages
+      .eq("coach_id", user.id);
 
     if (updateError) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
