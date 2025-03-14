@@ -90,6 +90,23 @@ export default function CreateClientWorkoutPage({
         throw assignError;
       }
 
+      // Send email notification to client
+      try {
+        await fetch("/api/client-portal/notify-workout-assigned", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            clientId: params.id,
+            workoutId: workoutData.id,
+          }),
+        });
+      } catch (notifyError) {
+        console.error("Error sending notification email:", notifyError);
+        // Continue with success flow even if email fails
+      }
+
       // Redirect to the workout details page to add exercises
       router.push(`/dashboard/workouts/${workoutData.id}`);
       router.refresh();

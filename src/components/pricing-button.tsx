@@ -24,6 +24,7 @@ export default function PricingButton({
 
     try {
       setIsLoading(true);
+      console.log(`Creating checkout session for price: ${priceId}`);
 
       // Use the API route instead of directly calling the function
       const response = await fetch("/api/create-checkout-session", {
@@ -41,6 +42,7 @@ export default function PricingButton({
       const data = await response.json();
 
       if (!response.ok) {
+        console.error("Error response from checkout API:", data);
         throw new Error(data.error || "Failed to create checkout session");
       }
 
@@ -48,6 +50,7 @@ export default function PricingButton({
       if (data?.url) {
         window.location.href = data.url;
       } else {
+        console.error("No URL in checkout response:", data);
         throw new Error("No checkout URL returned");
       }
     } catch (error) {

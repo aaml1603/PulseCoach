@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { UserCircle, Menu, X, LogOut } from "lucide-react";
+import { UserCircle, Menu, X, LogOut, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import NotificationBell from "./notification-bell";
@@ -52,6 +52,11 @@ export default function DashboardNavbar() {
         {/* Desktop navigation */}
         <div className="hidden md:flex gap-4 items-center">
           <ThemeToggle />
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/dashboard/messages">
+              <MessageSquare className="h-5 w-5" />
+            </Link>
+          </Button>
           <NotificationBell />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -62,6 +67,9 @@ export default function DashboardNavbar() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
                 <Link href="/dashboard/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/settings">Settings</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/dashboard/billing">Billing</Link>
@@ -84,12 +92,25 @@ export default function DashboardNavbar() {
         <div className="md:hidden bg-background border-t border-border py-4 px-4 space-y-4">
           <div className="flex justify-between items-center">
             <ThemeToggle />
-            <NotificationBell />
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/dashboard/messages">
+                  <MessageSquare className="h-5 w-5" />
+                </Link>
+              </Button>
+              <NotificationBell />
+            </div>
           </div>
           <Button variant="outline" className="w-full justify-start" asChild>
             <Link href="/dashboard/profile">
               <UserCircle className="mr-2 h-4 w-4" />
               Profile
+            </Link>
+          </Button>
+          <Button variant="outline" className="w-full justify-start" asChild>
+            <Link href="/dashboard/settings">
+              <User className="mr-2 h-4 w-4" />
+              Settings
             </Link>
           </Button>
           <Button

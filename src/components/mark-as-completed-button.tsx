@@ -82,6 +82,18 @@ export default function MarkAsCompletedButton({
         }
       }
 
+      // Refresh analytics data
+      try {
+        await fetch("/api/refresh-analytics", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (refreshError) {
+        console.error("Failed to refresh analytics:", refreshError);
+      }
+
       setCompleted(true);
       setShowFeedbackDialog(false);
     } catch (err: any) {

@@ -41,6 +41,12 @@ export default function Navbar({ user }: { user: any }) {
         {/* Desktop navigation */}
         <div className="hidden md:flex gap-6 items-center">
           <Link
+            href="/"
+            className="text-sm font-medium text-gray-700 hover:text-orange-500"
+          >
+            Home
+          </Link>
+          <Link
             href="/#features"
             className="text-sm font-medium text-gray-700 hover:text-orange-500"
           >
@@ -93,6 +99,13 @@ export default function Navbar({ user }: { user: any }) {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-background border-t border-border py-4 px-4 space-y-3">
+          <Link
+            href="/"
+            className="block py-2 text-sm font-medium hover:text-orange-500"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Home
+          </Link>
           <Link
             href="/#features"
             className="block py-2 text-sm font-medium hover:text-orange-500"

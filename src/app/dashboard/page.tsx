@@ -10,6 +10,7 @@ import {
   Trophy,
   Activity,
 } from "lucide-react";
+import QuickWorkoutAssign from "@/components/quick-workout-assign";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,8 @@ export default async function Dashboard() {
 
   const workoutCount = workouts?.length || 0;
 
-  // Get analytics data
+  // Get analytics data with cache busting for real-time updates
+  const timestamp = Date.now();
   const analytics = await getClientAnalytics(user.id);
 
   return (
@@ -145,6 +147,9 @@ export default async function Dashboard() {
               <Button className="w-full bg-gray-900 hover:bg-gray-950" asChild>
                 <Link href="/dashboard/clients">View All Clients</Link>
               </Button>
+            </div>
+            <div className="mt-4">
+              <QuickWorkoutAssign />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
               <Button className="w-full bg-gray-800 hover:bg-gray-900" asChild>

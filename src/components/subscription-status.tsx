@@ -2,18 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "../../supabase/client";
-import { Button } from "./ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import { Badge } from "./ui/badge";
-import { CreditCard, CheckCircle, AlertCircle } from "lucide-react";
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, AlertCircle, Clock } from "lucide-react";
 
 export default function SubscriptionStatus() {
   const [subscription, setSubscription] = useState<any>(null);
@@ -41,7 +31,6 @@ export default function SubscriptionStatus() {
           .from("subscriptions")
           .select("*")
           .eq("user_id", user.id)
-          .in("status", ["active", "trialing"])
           .order("created_at", { ascending: false })
           .limit(1)
           .single();
@@ -69,112 +58,113 @@ export default function SubscriptionStatus() {
     return new Date(timestamp * 1000).toLocaleDateString();
   };
 
-  const formatAmount = (amount: number) => {
-    if (!amount) return "$0";
-    return `$${(amount / 100).toFixed(2)}`;
-  };
-
   if (loading) {
     return (
-      <Card className="w-full">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-center h-24">
-            <div className="animate-pulse h-4 w-32 bg-muted rounded"></div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="animate-pulse flex items-center space-x-2">
+        <div className="h-4 w-24 bg-muted rounded"></div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Card className="w-full">
-        <CardContent className="pt-6">
-          <div className="flex flex-col items-center justify-center h-24 text-center">
-            <AlertCircle className="h-8 w-8 text-red-500 mb-2" />
-            <p className="text-muted-foreground">
-              Unable to load subscription information
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="text-red-500 flex items-center space-x-2">
+        <AlertCircle className="h-4 w-4" />
+        <span>Error loading subscription</span>
+      </div>
     );
   }
 
   if (!subscription) {
     return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Subscription</CardTitle>
-          <CardDescription>
-            You don't have an active subscription
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center py-4">
-            <p className="text-muted-foreground mb-4">
-              Subscribe to access premium features
-            </p>
-            <Button asChild>
-              <Link href="/pricing">View Plans</Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center space-x-2">
+          <Badge
+            variant="outline"
+            className="text-amber-500 border-amber-200 bg-amber-50"
+          >
+            No Active Subscription
+          </Badge>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          You don't have an active subscription. View our pricing plans to
+          subscribe.
+        </p>
+      </div>
     );
   }
 
+  // Check if user is on a free trial
+  const isTrial = subscription.status === "trialing";
+  const isActive = subscription.status === "active";
+  const isPastDue = subscription.status === "past_due";
+  const isCancelled = subscription.cancel_at_period_end;
+
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle>Subscription</CardTitle>
-            <CardDescription>Your current plan details</CardDescription>
-          </div>
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center space-x-2">
+        {isTrial && (
           <Badge
-            variant={subscription.status === "active" ? "default" : "outline"}
+            variant="outline"
+            className="text-blue-500 border-blue-200 bg-blue-50"
           >
-            {subscription.status === "active" ? "Active" : subscription.status}
+            Free Trial
           </Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Plan</span>
-            <span className="font-medium">Coach Pro Plan</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Amount</span>
-            <span className="font-medium">
-              {formatAmount(subscription.amount)} / {subscription.interval}
+        )}
+        {isActive && !isCancelled && (
+          <Badge variant="default" className="bg-green-500">
+            Active
+          </Badge>
+        )}
+        {isActive && isCancelled && (
+          <Badge
+            variant="outline"
+            className="text-amber-500 border-amber-200 bg-amber-50"
+          >
+            Cancelling
+          </Badge>
+        )}
+        {isPastDue && (
+          <Badge
+            variant="outline"
+            className="text-red-500 border-red-200 bg-red-50"
+          >
+            Payment Issue
+          </Badge>
+        )}
+      </div>
+
+      <div className="text-sm">
+        {isTrial && (
+          <div className="flex items-center space-x-1 text-blue-600">
+            <Clock className="h-4 w-4" />
+            <span>
+              Trial ends on {formatDate(subscription.current_period_end)}
             </span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Current period</span>
-            <span className="font-medium">
-              {formatDate(subscription.current_period_start)} -{" "}
-              {formatDate(subscription.current_period_end)}
-            </span>
+        )}
+
+        {isActive && !isCancelled && (
+          <div className="flex items-center space-x-1 text-green-600">
+            <CheckCircle className="h-4 w-4" />
+            <span>Renews on {formatDate(subscription.current_period_end)}</span>
           </div>
-          {subscription.cancel_at_period_end && (
-            <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-sm text-amber-800">
-              <p>
-                Your subscription will end on{" "}
-                {formatDate(subscription.current_period_end)}
-              </p>
-            </div>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button variant="outline" className="w-full" asChild>
-          <Link href="/dashboard/billing">
-            <CreditCard className="mr-2 h-4 w-4" /> Manage Subscription
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+        )}
+
+        {isActive && isCancelled && (
+          <div className="flex items-center space-x-1 text-amber-600">
+            <Clock className="h-4 w-4" />
+            <span>Ends on {formatDate(subscription.current_period_end)}</span>
+          </div>
+        )}
+
+        {isPastDue && (
+          <div className="flex items-center space-x-1 text-red-600">
+            <AlertCircle className="h-4 w-4" />
+            <span>Please update your payment method</span>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

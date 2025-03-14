@@ -3,7 +3,6 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
 import { forgotPasswordAction } from "@/app/actions";
 import Navbar from "@/components/navbar";
 
@@ -27,7 +26,9 @@ export default async function ForgotPassword(props: {
         <div className="w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-sm">
           <form className="flex flex-col space-y-6">
             <div className="space-y-2 text-center">
-              <h1 className="text-3xl font-semibold tracking-tight">Reset Password</h1>
+              <h1 className="text-3xl font-semibold tracking-tight">
+                Reset Password
+              </h1>
               <p className="text-sm text-muted-foreground">
                 Already have an account?{" "}
                 <Link
@@ -66,7 +67,6 @@ export default async function ForgotPassword(props: {
             <FormMessage message={searchParams} />
           </form>
         </div>
-        <SmtpMessage />
       </div>
     </>
   );

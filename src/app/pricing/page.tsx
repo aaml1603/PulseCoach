@@ -2,8 +2,11 @@ import Navbar from "@/components/navbar";
 import PricingCard from "@/components/pricing-card";
 import { createClient } from "../../../supabase/server";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
 import Footer from "@/components/footer";
+import PricingButton from "@/components/pricing-button";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const metadata = {
   title: "Pricing - PulseCoach",
@@ -23,9 +26,55 @@ export default async function PricingPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: plans, error } = await supabase.functions.invoke(
-    "supabase-functions-get-plans",
-  );
+  // Fetch all plans from Stripe
+  let allPlans = [];
+  try {
+    const { data, error } = await supabase.functions.invoke("get-plans");
+    if (data && Array.isArray(data) && data.length > 0) {
+      allPlans = data;
+    } else {
+      // Fallback plans if the function fails or returns empty
+      allPlans = [
+        {
+          id: "price_monthly",
+          name: "Coach Pro Plan",
+          amount: 2000, // $20.00
+          interval: "month",
+          currency: "usd",
+        },
+        {
+          id: "price_yearly",
+          name: "Coach Pro Plan",
+          amount: 19200, // $192.00
+          interval: "year",
+          currency: "usd",
+        },
+      ];
+    }
+  } catch (e) {
+    console.error("Error fetching plans:", e);
+    // Fallback plans if the function throws an error
+    allPlans = [
+      {
+        id: "price_monthly",
+        name: "Coach Pro Plan",
+        amount: 2000,
+        interval: "month",
+        currency: "usd",
+      },
+      {
+        id: "price_yearly",
+        name: "Coach Pro Plan",
+        amount: 19200,
+        interval: "year",
+        currency: "usd",
+      },
+    ];
+  }
+
+  // Separate plans by interval (monthly and yearly)
+  const monthlyPlan = allPlans.find((plan: any) => plan.interval === "month");
+  const yearlyPlan = allPlans.find((plan: any) => plan.interval === "year");
 
   // Check if user was redirected due to missing subscription or trial expiration
   const accessDenied = searchParams.access === "denied";
@@ -69,11 +118,34 @@ export default async function PricingPage({
           </p>
         </div>
 
-        <div className="flex justify-center">
-          {plans?.map((item: any) => (
-            <PricingCard key={item.id} item={item} user={user} />
-          ))}
+        {/* Pricing cards section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
+          {monthlyPlan && (
+            <PricingCard key={monthlyPlan.id} item={monthlyPlan} user={user} />
+          )}
+          {yearlyPlan && (
+            <PricingCard key={yearlyPlan.id} item={yearlyPlan} user={user} />
+          )}
         </div>
+
+        {/* CTA Section */}
+        <section className="py-20 bg-muted/20 border-t border-border/40 mt-12">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold mb-4">
+              Ready to Transform Your Coaching Business?
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Join thousands of fitness professionals who are growing their
+              business and delivering better results to clients. Start your
+              7-day free trial today!
+            </p>
+            <Button size="lg" className="text-lg" asChild>
+              <Link href="/sign-up">
+                Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </section>
       </div>
       <Footer />
     </>

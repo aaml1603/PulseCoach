@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Twitter, Linkedin, Instagram, Dumbbell } from "lucide-react";
+import { Twitter, Instagram, Dumbbell } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -66,23 +66,35 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-900 mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-gray-600 hover:text-orange-500">
+                <Link
+                  href="/about"
+                  className="text-gray-600 hover:text-orange-500"
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-600 hover:text-orange-500">
-                  Blog
+                <Link
+                  href="/terms"
+                  className="text-gray-600 hover:text-orange-500"
+                >
+                  Terms
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-600 hover:text-orange-500">
-                  Careers
+                <Link
+                  href="/security"
+                  className="text-gray-600 hover:text-orange-500"
+                >
+                  Security
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-600 hover:text-orange-500">
-                  Press
+                <Link
+                  href="/privacy"
+                  className="text-gray-600 hover:text-orange-500"
+                >
+                  Privacy
                 </Link>
               </li>
             </ul>
@@ -98,7 +110,10 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-600 hover:text-orange-500">
+                <Link
+                  href="/help"
+                  className="text-gray-600 hover:text-orange-500"
+                >
                   Help Center
                 </Link>
               </li>
@@ -115,28 +130,26 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal Column */}
+          {/* Support Column */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Legal</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-gray-600 hover:text-orange-500">
-                  Privacy
+                <Link
+                  href="/help"
+                  className="text-gray-600 hover:text-orange-500"
+                >
+                  Help Center
                 </Link>
               </li>
               <li>
                 <Link href="#" className="text-gray-600 hover:text-orange-500">
-                  Terms
+                  Coach Community
                 </Link>
               </li>
               <li>
                 <Link href="#" className="text-gray-600 hover:text-orange-500">
-                  Security
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-orange-500">
-                  Cookies
+                  Exercise Library
                 </Link>
               </li>
             </ul>
@@ -150,16 +163,25 @@ export default function Footer() {
 
           <div className="flex space-x-6">
             <a href="#" className="text-gray-400 hover:text-orange-500">
-              <span className="sr-only">Twitter</span>
+              <span className="sr-only">X (Twitter)</span>
               <Twitter className="h-6 w-6" />
-            </a>
-            <a href="#" className="text-gray-400 hover:text-orange-500">
-              <span className="sr-only">LinkedIn</span>
-              <Linkedin className="h-6 w-6" />
             </a>
             <a href="#" className="text-gray-400 hover:text-orange-500">
               <span className="sr-only">Instagram</span>
               <Instagram className="h-6 w-6" />
+            </a>
+            <a href="#" className="text-gray-400 hover:text-orange-500">
+              <span className="sr-only">TikTok</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 512 512"
+                fill="currentColor"
+                className="h-6 w-6"
+              >
+                <path d="M412.19,118.66a109.27,109.27,0,0,1-9.45-5.5,132.87,132.87,0,0,1-24.27-20.62c-18.1-20.71-24.86-41.72-27.35-56.43h.1C349.14,23.9,350,16,350.13,16H267.69V334.78c0,4.28,0,8.51-.18,12.69,0,.52-.05,1-.08,1.56,0,.23,0,.47-.05.71,0,.06,0,.12,0,.18a70,70,0,0,1-35.22,55.56,68.8,68.8,0,0,1-34.11,9c-38.41,0-69.54-31.32-69.54-70s31.13-70,69.54-70a68.9,68.9,0,0,1,21.41,3.39l.1-83.94a153.14,153.14,0,0,0-118,34.52,161.79,161.79,0,0,0-35.3,43.53c-3.48,6-16.61,30.11-18.2,69.24-1,22.21,5.67,45.22,8.85,54.73v.2c2,5.6,9.75,24.71,22.38,40.82A167.53,167.53,0,0,0,115,470.66v-.2l.2.2C155.11,497.78,199.36,496,199.36,496c7.66-.31,33.32,0,62.46-13.81,32.32-15.31,50.72-38.12,50.72-38.12a158.46,158.46,0,0,0,27.64-45.93c7.46-19.61,9.95-43.13,9.95-52.53V176.49c1,.6,14.32,9.41,14.32,9.41s19.19,12.3,49.13,20.31c21.48,5.7,50.42,6.9,50.42,6.9V131.27C453.86,132.37,433.27,129.17,412.19,118.66Z" />
+              </svg>
             </a>
           </div>
         </div>

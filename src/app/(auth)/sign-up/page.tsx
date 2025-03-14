@@ -46,6 +46,9 @@ export default async function Signup(props: {
             <div className="bg-orange-50 border border-orange-200 rounded-md p-3 text-sm text-orange-800 dark:bg-orange-900/20 dark:border-orange-900/50 dark:text-orange-200">
               <p className="font-medium">Start with a 7-day free trial!</p>
               <p>Get full access to all features. No credit card required.</p>
+              <p className="text-xs mt-1 text-orange-700 dark:text-orange-300">
+                Note: Free trial is limited to one per person.
+              </p>
             </div>
 
             <div className="space-y-4">

@@ -6,32 +6,32 @@ export const createClient = async () => {
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.SUPABASE_SERVICE_KEY!,
     {
       cookies: {
-        getAll() {
+        get(name: string) {
           try {
-            return cookieStore.getAll().map(({ name, value }) => ({
-              name,
-              value,
-            }));
+            return cookieStore.get(name)?.value;
           } catch (error) {
-            // If cookies() is called in an environment where it's not allowed
             console.error("Error accessing cookies:", error);
-            return [];
+            return undefined;
           }
         },
-        setAll(cookiesToSet) {
+        set(name: string, value: string, options: any) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
+            cookieStore.set({ name, value, ...options });
           } catch (error) {
-            // If cookies() is called in an environment where it's not allowed
             console.error("Error setting cookies:", error);
           }
         },
+        remove(name: string, options: any) {
+          try {
+            cookieStore.set({ name, value: "", ...options });
+          } catch (error) {
+            console.error("Error removing cookies:", error);
+          }
+        },
       },
-    }
+    },
   );
 };

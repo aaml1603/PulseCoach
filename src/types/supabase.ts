@@ -397,6 +397,24 @@ export type Database = {
           },
         ]
       }
+      email_rate_limits: {
+        Row: {
+          count: number
+          email: string
+          last_sent: string
+        }
+        Insert: {
+          count?: number
+          email: string
+          last_sent: string
+        }
+        Update: {
+          count?: number
+          email?: string
+          last_sent?: string
+        }
+        Relationships: []
+      }
       email_templates: {
         Row: {
           created_at: string | null
@@ -726,6 +744,30 @@ export type Database = {
           },
         ]
       }
+      trial_ip_tracking: {
+        Row: {
+          count: number | null
+          first_signup_at: string | null
+          ip_address: string
+          last_signup_at: string | null
+          last_user_id: string | null
+        }
+        Insert: {
+          count?: number | null
+          first_signup_at?: string | null
+          ip_address: string
+          last_signup_at?: string | null
+          last_user_id?: string | null
+        }
+        Update: {
+          count?: number | null
+          first_signup_at?: string | null
+          ip_address?: string
+          last_signup_at?: string | null
+          last_user_id?: string | null
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           avatar_url: string | null
@@ -921,6 +963,27 @@ export type Database = {
         }
         Returns: undefined
       }
+      has_used_trial: {
+        Args: {
+          check_email: string
+        }
+        Returns: boolean
+      }
+      increment_ip_trial_count:
+        | {
+            Args: {
+              ip: string
+              user_id: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              ip: string
+              user_id: string
+            }
+            Returns: undefined
+          }
     }
     Enums: {
       [_ in never]: never

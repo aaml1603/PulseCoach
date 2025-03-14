@@ -1,10 +1,32 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
 export function FitnessBackground() {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Only show the UI when mounted to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Use a default color for server-side rendering
+  // Client-side will update this after hydration
+  const fillColor = mounted
+    ? resolvedTheme === "dark"
+      ? "#ffffff"
+      : "#000000"
+    : "currentColor";
+
+  if (!mounted) {
+    return (
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none opacity-0">
+        {/* Empty div until client-side rendering */}
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none opacity-30 dark:opacity-10">
@@ -15,7 +37,7 @@ export function FitnessBackground() {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g fill={isDark ? "#ffffff" : "#000000"}>
+          <g fill={fillColor}>
             <path d="M20,35 h60 a5,5 0 0 1 0,10 h-60 a5,5 0 0 1 0,-10 z" />
             <circle cx="15" cy="40" r="10" />
             <circle cx="85" cy="40" r="10" />
@@ -34,7 +56,7 @@ export function FitnessBackground() {
         >
           <path
             d="M0,50 h20 l5,-15 l10,30 l10,-30 l5,15 h50"
-            stroke={isDark ? "#ffffff" : "#000000"}
+            stroke={fillColor}
             strokeWidth="2"
             fill="none"
           />
@@ -48,26 +70,14 @@ export function FitnessBackground() {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle
-            cx="50"
-            cy="50"
-            r="45"
-            stroke={isDark ? "#ffffff" : "#000000"}
-            strokeWidth="2"
-          />
-          <circle
-            cx="50"
-            cy="50"
-            r="40"
-            stroke={isDark ? "#ffffff" : "#000000"}
-            strokeWidth="1"
-          />
+          <circle cx="50" cy="50" r="45" stroke={fillColor} strokeWidth="2" />
+          <circle cx="50" cy="50" r="40" stroke={fillColor} strokeWidth="1" />
           <line
             x1="50"
             y1="10"
             x2="50"
             y2="20"
-            stroke={isDark ? "#ffffff" : "#000000"}
+            stroke={fillColor}
             strokeWidth="2"
           />
           <line
@@ -75,7 +85,7 @@ export function FitnessBackground() {
             y1="80"
             x2="50"
             y2="90"
-            stroke={isDark ? "#ffffff" : "#000000"}
+            stroke={fillColor}
             strokeWidth="2"
           />
           <line
@@ -83,7 +93,7 @@ export function FitnessBackground() {
             y1="50"
             x2="20"
             y2="50"
-            stroke={isDark ? "#ffffff" : "#000000"}
+            stroke={fillColor}
             strokeWidth="2"
           />
           <line
@@ -91,7 +101,7 @@ export function FitnessBackground() {
             y1="50"
             x2="90"
             y2="50"
-            stroke={isDark ? "#ffffff" : "#000000"}
+            stroke={fillColor}
             strokeWidth="2"
           />
           <line
@@ -99,7 +109,7 @@ export function FitnessBackground() {
             y1="50"
             x2="50"
             y2="30"
-            stroke={isDark ? "#ffffff" : "#000000"}
+            stroke={fillColor}
             strokeWidth="3"
           />
           <line
@@ -107,7 +117,7 @@ export function FitnessBackground() {
             y1="50"
             x2="70"
             y2="50"
-            stroke={isDark ? "#ffffff" : "#000000"}
+            stroke={fillColor}
             strokeWidth="3"
           />
         </svg>

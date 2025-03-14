@@ -13,11 +13,20 @@ import {
 } from "./ui/card";
 import { CheckCircle2 } from "lucide-react";
 
+interface PricingItem {
+  id: string;
+  name: string;
+  amount: number;
+  interval: string;
+  currency: string;
+  metadata?: Record<string, any>;
+}
+
 export default function PricingCard({
   item,
   user,
 }: {
-  item: any;
+  item: PricingItem;
   user: User | null;
 }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +41,7 @@ export default function PricingCard({
 
     try {
       setIsLoading(true);
+      console.log(`Creating checkout session for price: ${priceId}`);
 
       // Use the API route instead of directly calling the function
       const response = await fetch("/api/create-checkout-session", {
@@ -49,6 +59,7 @@ export default function PricingCard({
       const data = await response.json();
 
       if (!response.ok) {
+        console.error("Error response from checkout API:", data);
         throw new Error(data.error || "Failed to create checkout session");
       }
 
@@ -56,6 +67,7 @@ export default function PricingCard({
       if (data?.url) {
         window.location.href = data.url;
       } else {
+        console.error("No URL in checkout response:", data);
         throw new Error("No checkout URL returned");
       }
     } catch (error) {
@@ -67,20 +79,54 @@ export default function PricingCard({
     }
   };
 
+  // Format the price display based on interval
+  const formatPrice = () => {
+    const amount = item?.amount / 100;
+    if (item?.interval === "year") {
+      return (
+        <>
+          <span className="text-5xl font-bold text-gray-900 dark:text-gray-100">
+            ${amount}
+          </span>
+          <span className="text-gray-600 dark:text-gray-400 text-xl">
+            /year
+          </span>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <span className="text-5xl font-bold text-gray-900 dark:text-gray-100">
+            ${amount}
+          </span>
+          <span className="text-gray-600 dark:text-gray-400 text-xl">
+            /{item?.interval}
+          </span>
+        </>
+      );
+    }
+  };
+
+  // Get the appropriate badge text based on interval
+  const getBadgeText = () => {
+    if (item?.interval === "year") {
+      return "Best Value";
+    } else {
+      return "Most Popular";
+    }
+  };
+
   return (
     <Card className="w-full max-w-xl mx-auto relative overflow-hidden border border-primary/20 shadow-md hover:shadow-lg transition-all">
       <CardHeader className="relative text-center pb-2">
         <div className="px-4 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-full w-fit mx-auto mb-4">
-          Recommended Plan
+          {getBadgeText()}
         </div>
-        <CardTitle className="text-3xl font-bold tracking-tight text-gray-900">
+        <CardTitle className="text-3xl font-bold tracking-tight">
           {item.name}
         </CardTitle>
         <CardDescription className="flex items-baseline gap-2 mt-4 justify-center">
-          <span className="text-5xl font-bold text-gray-900">
-            ${item?.amount / 100}
-          </span>
-          <span className="text-gray-600 text-xl">/{item?.interval}</span>
+          {formatPrice()}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6 pb-6">
@@ -105,6 +151,14 @@ export default function PricingCard({
             <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
             <span>Client portal access</span>
           </div>
+          {item?.interval === "year" && (
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+              <span className="font-medium text-primary">
+                Save 16% compared to monthly
+              </span>
+            </div>
+          )}
         </div>
       </CardContent>
       <CardFooter className="pt-2 pb-8">

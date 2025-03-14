@@ -1,6 +1,7 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { createClient } from "../../supabase/server";
+import HeroVideoBackground from "@/components/hero-video-background";
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -55,9 +56,12 @@ export default async function Home() {
 
       {/* Hero Section */}
       <section className="relative py-24 md:py-36 overflow-hidden border-b border-border/40">
-        <div className="container mx-auto px-4">
+        {/* Video Background */}
+        <HeroVideoBackground />
+
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-2">
+            <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-2 backdrop-blur-sm">
               Now with 7-day free trial! No credit card required.
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
@@ -81,7 +85,6 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        <div className="absolute inset-0 -z-10 h-full w-full bg-white dark:bg-black bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-20"></div>
       </section>
 
       {/* Stats Section */}
@@ -301,15 +304,23 @@ export default async function Home() {
               fees.
             </p>
           </div>
-          <div className="flex flex-col items-center justify-center max-w-md mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Monthly Plan */}
             <div className="w-full bg-card border border-primary/20 rounded-xl overflow-hidden shadow-md">
               <div className="bg-primary text-white text-center py-3 px-4">
-                <h3 className="text-xl font-medium">Recommended Plan</h3>
+                <h3 className="text-xl font-medium">Monthly Plan</h3>
               </div>
 
               <div className="p-8 text-center">
                 <div className="text-6xl font-bold mb-2">
-                  <span>$20</span>
+                  <span>
+                    $
+                    {plans?.find((plan: any) => plan.interval === "month")
+                      ?.amount
+                      ? plans.find((plan: any) => plan.interval === "month")
+                          .amount / 100
+                      : 20}
+                  </span>
                   <span className="text-2xl text-muted-foreground">/month</span>
                 </div>
 
@@ -351,7 +362,132 @@ export default async function Home() {
                 </div>
 
                 <PricingButton
-                  priceId="coach_pro_plan"
+                  priceId="price_monthly"
+                  userId={user?.id}
+                  isLoggedIn={!!user}
+                />
+              </div>
+            </div>
+
+            {/* Yearly Plan */}
+            <div className="w-full bg-card border border-primary/20 rounded-xl overflow-hidden shadow-md">
+              <div className="bg-primary text-white text-center py-3 px-4">
+                <h3 className="text-xl font-medium">Yearly Plan</h3>
+                <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                  Save 16%
+                </span>
+              </div>
+
+              <div className="p-8 text-center">
+                <div className="text-6xl font-bold mb-2">
+                  <span>
+                    $
+                    {plans?.find((plan: any) => plan.interval === "year")
+                      ?.amount
+                      ? plans.find((plan: any) => plan.interval === "year")
+                          .amount / 100
+                      : 192}
+                  </span>
+                  <span className="text-2xl text-muted-foreground">/year</span>
+                </div>
+                {plans?.find((plan: any) => plan.interval === "year")
+                  ?.amount && (
+                  <div className="text-sm text-muted-foreground mb-4">
+                    Only $
+                    {Math.round(
+                      plans.find((plan: any) => plan.interval === "year")
+                        .amount /
+                        100 /
+                        12,
+                    )}
+                    /month
+                  </div>
+                )}
+                {!plans?.find((plan: any) => plan.interval === "year")
+                  ?.amount && (
+                  <div className="text-sm text-muted-foreground mb-4">
+                    Only $16/month
+                  </div>
+                )}
+
+                <div className="space-y-4 mt-8 text-left">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <span>Unlimited clients</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <span>Advanced analytics</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <span>Priority support</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <span>Custom workout builder</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-primary/10 p-1">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <span>Client portal access</span>
+                  </div>
+
+                  {plans?.find((plan: any) => plan.interval === "month")
+                    ?.amount &&
+                    plans?.find((plan: any) => plan.interval === "year")
+                      ?.amount && (
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-full bg-primary/10 p-1">
+                          <CheckCircle2 className="h-5 w-5 text-primary" />
+                        </div>
+                        <span className="font-medium text-primary">
+                          Save $
+                          {Math.round(
+                            (plans.find(
+                              (plan: any) => plan.interval === "month",
+                            ).amount /
+                              100) *
+                              12 -
+                              plans.find(
+                                (plan: any) => plan.interval === "year",
+                              ).amount /
+                                100,
+                          )}{" "}
+                          compared to monthly
+                        </span>
+                      </div>
+                    )}
+                  {(!plans?.find((plan: any) => plan.interval === "month")
+                    ?.amount ||
+                    !plans?.find((plan: any) => plan.interval === "year")
+                      ?.amount) && (
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-full bg-primary/10 p-1">
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                      </div>
+                      <span className="font-medium text-primary">
+                        Save $40 compared to monthly
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <PricingButton
+                  priceId="price_yearly"
                   userId={user?.id}
                   isLoggedIn={!!user}
                 />

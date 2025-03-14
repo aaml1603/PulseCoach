@@ -14,7 +14,7 @@ export const sendEmail = async (
   html: string,
   text: string,
 ) => {
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "noreply@pulsecoach.com";
+  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "contact@pulsecoach.org";
   const fromName = "PulseCoach";
 
   // Prepare email message with proper headers to reduce spam likelihood

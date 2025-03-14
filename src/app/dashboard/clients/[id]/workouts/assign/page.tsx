@@ -108,6 +108,23 @@ export default function AssignWorkoutPage({
         throw insertError;
       }
 
+      // Send email notification to client
+      try {
+        await fetch("/api/client-portal/notify-workout-assigned", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            clientId: params.id,
+            workoutId: selectedWorkout,
+          }),
+        });
+      } catch (notifyError) {
+        console.error("Error sending notification email:", notifyError);
+        // Continue with success flow even if email fails
+      }
+
       // Get the workout name for the success message
       const selectedWorkoutData = workouts.find(
         (w) => w.id === selectedWorkout,
