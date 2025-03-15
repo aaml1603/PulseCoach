@@ -2,7 +2,8 @@
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  // Remove swcMinify as it's not recognized in Next.js 15
+  // swcMinify: true,
   // Add transpilePackages for Stripe
   transpilePackages: ["stripe"],
   images: {

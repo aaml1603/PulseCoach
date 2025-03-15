@@ -30,7 +30,8 @@ interface EmailTemplate {
 
 export default function EmailTemplatesPage() {
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<EmailTemplate | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,13 +70,16 @@ export default function EmailTemplatesPage() {
     let html = template.html_content
       .replace(/\{\{clientName\}\}/g, "John Doe")
       .replace(/\{\{coachName\}\}/g, "Coach Smith")
-      .replace(/\{\{portalUrl\}\}/g, "https://example.com/client-portal/abc123");
+      .replace(
+        /\{\{portalUrl\}\}/g,
+        "https://example.com/client-portal/abc123",
+      );
 
     setPreviewHtml(html);
   };
 
   const handleTemplateSelect = (templateId: string) => {
-    const template = templates.find(t => t.id === templateId);
+    const template = templates.find((t) => t.id === templateId);
     if (template) {
       setSelectedTemplate(template);
       updatePreview(template);
@@ -97,7 +101,7 @@ export default function EmailTemplatesPage() {
           subject: selectedTemplate.subject,
           html_content: selectedTemplate.html_content,
           text_content: selectedTemplate.text_content,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq("id", selectedTemplate.id);
 
@@ -114,10 +118,10 @@ export default function EmailTemplatesPage() {
 
   const handleInputChange = (field: keyof EmailTemplate, value: string) => {
     if (!selectedTemplate) return;
-    
+
     setSelectedTemplate({
       ...selectedTemplate,
-      [field]: value
+      [field]: value,
     });
   };
 
@@ -179,21 +183,25 @@ export default function EmailTemplatesPage() {
           <Card>
             <CardHeader>
               <CardTitle>Email Templates</CardTitle>
-              <CardDescription>
-                Select a template to edit
-              </CardDescription>
+              <CardDescription>Select a template to edit</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {templates.map(template => (
-                  <Button 
-                    key={template.id} 
-                    variant={selectedTemplate?.id === template.id ? "default" : "outline"}
+                {templates.map((template) => (
+                  <Button
+                    key={template.id}
+                    variant={
+                      selectedTemplate?.id === template.id
+                        ? "default"
+                        : "outline"
+                    }
                     className="w-full justify-start"
                     onClick={() => handleTemplateSelect(template.id)}
                   >
                     <Mail className="mr-2 h-4 w-4" />
-                    {template.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    {template.name
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase())}
                   </Button>
                 ))}
               </div>
@@ -206,11 +214,11 @@ export default function EmailTemplatesPage() {
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {selectedTemplate.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {selectedTemplate.name
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (l) => l.toUpperCase())}
                 </CardTitle>
-                <CardDescription>
-                  Edit the template content
-                </CardDescription>
+                <CardDescription>Edit the template content</CardDescription>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="edit">
@@ -218,26 +226,32 @@ export default function EmailTemplatesPage() {
                     <TabsTrigger value="edit">Edit</TabsTrigger>
                     <TabsTrigger value="preview">Preview</TabsTrigger>
                   </TabsList>
-                  
+
                   <TabsContent value="edit" className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="subject">Subject Line</Label>
                       <Input
                         id="subject"
                         value={selectedTemplate.subject}
-                        onChange={(e) => handleInputChange('subject', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("subject", e.target.value)
+                        }
                       />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="html_content">HTML Content</Label>
                       <div className="text-xs text-muted-foreground mb-2">
-                        Available variables: {{'{{'}}clientName{{'}}'}}, {{'{{'}}coachName{{'}}'}}, {{'{{'}}portalUrl{{'}}'}}
+                        Available variables: &#123;&#123;clientName&#125;&#125;,
+                        &#123;&#123;coachName&#125;&#125;,
+                        &#123;&#123;portalUrl&#125;&#125;
                       </div>
                       <Textarea
                         id="html_content"
                         value={selectedTemplate.html_content}
-                        onChange={(e) => handleInputChange('html_content', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("html_content", e.target.value)
+                        }
                         rows={12}
                         className="font-mono text-sm"
                       />
@@ -248,20 +262,22 @@ export default function EmailTemplatesPage() {
                       <Textarea
                         id="text_content"
                         value={selectedTemplate.text_content}
-                        onChange={(e) => handleInputChange('text_content', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("text_content", e.target.value)
+                        }
                         rows={4}
                         className="font-mono text-sm"
                       />
                     </div>
                   </TabsContent>
-                  
+
                   <TabsContent value="preview">
                     <div className="border rounded-md p-4 bg-white">
                       <div className="mb-4 p-2 bg-gray-100 rounded text-sm">
                         <strong>Subject:</strong> {selectedTemplate.subject}
                       </div>
-                      <div 
-                        className="email-preview" 
+                      <div
+                        className="email-preview"
                         dangerouslySetInnerHTML={{ __html: previewHtml }}
                       />
                     </div>
@@ -269,8 +285,8 @@ export default function EmailTemplatesPage() {
                 </Tabs>
               </CardContent>
               <CardFooter>
-                <Button 
-                  onClick={handleSave} 
+                <Button
+                  onClick={handleSave}
                   disabled={isSaving}
                   className="ml-auto"
                 >
