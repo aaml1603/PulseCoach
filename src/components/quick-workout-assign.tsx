@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,20 +21,56 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createClient } from "../../supabase/client";
-import { Dumbbell, Search, Loader2, CheckCircle } from "lucide-react";
+import { Dumbbell, Search, Loader2, CheckCircle, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { addDays, format } from "date-fns";
+
+interface Client {
+  id: string;
+  name: string;
+}
+
+interface Workout {
+  id: string;
+  name: string;
+}
 
 export default function QuickWorkoutAssign() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [clients, setClients] = useState<any[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
-  const [workouts, setWorkouts] = useState<any[]>([]);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [selectedWorkout, setSelectedWorkout] = useState<string>("");
+  const [dueDate, setDueDate] = useState<string>(() => {
+    // Default due date is 7 days from today
+    const defaultDate = addDays(new Date(), 7);
+    return format(defaultDate, "yyyy-MM-dd");
+  });
   const [isSearching, setIsSearching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  // Reset form state when dialog closes
+  const handleOpenChange = useCallback((newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      // Reset form state when dialog closes
+      setTimeout(() => {
+        setSelectedClient("");
+        setSelectedWorkout("");
+        setSearchQuery("");
+        setClients([]);
+        setError(null);
+        setIsSuccess(false);
+        // Reset due date to default (7 days from today)
+        const defaultDate = addDays(new Date(), 7);
+        setDueDate(format(defaultDate, "yyyy-MM-dd"));
+      }, 300); // Small delay to allow close animation
+    }
+  }, []);
 
   // Search clients as user types
   useEffect(() => {
@@ -58,6 +94,7 @@ export default function QuickWorkoutAssign() {
         setClients(data || []);
       } catch (err) {
         console.error("Error searching clients:", err);
+        setError("Failed to search clients. Please try again.");
       } finally {
         setIsSearching(false);
       }
@@ -66,17 +103,23 @@ export default function QuickWorkoutAssign() {
     return () => clearTimeout(debounceTimeout);
   }, [searchQuery]);
 
-  const handleClientSelect = async (clientId: string) => {
+  const handleClientSelect = useCallback(async (clientId: string) => {
     setSelectedClient(clientId);
+    setError(null);
     try {
       const supabase = createClient();
 
       // Get current user
       const {
         data: { user },
+        error: userError,
       } = await supabase.auth.getUser();
 
-      if (!user) return;
+      if (userError) throw userError;
+      if (!user) {
+        setError("Authentication error. Please sign in again.");
+        return;
+      }
 
       // Fetch coach's workouts (only general workouts, not client-specific ones)
       const { data, error } = await supabase
@@ -90,13 +133,19 @@ export default function QuickWorkoutAssign() {
       setWorkouts(data || []);
     } catch (err) {
       console.error("Error fetching workouts:", err);
+      setError("Failed to load workouts. Please try again.");
     }
-  };
+  }, []);
 
-  const assignWorkout = async () => {
+  const assignWorkout = useCallback(async () => {
     if (!selectedClient || !selectedWorkout) return;
+    if (!dueDate) {
+      setError("Please select a due date");
+      return;
+    }
 
     setIsLoading(true);
+    setError(null);
     try {
       const supabase = createClient();
 
@@ -105,6 +154,7 @@ export default function QuickWorkoutAssign() {
         client_id: selectedClient,
         workout_id: selectedWorkout,
         assigned_date: new Date().toISOString(),
+        due_date: new Date(dueDate).toISOString(),
         status: "assigned",
       });
 
@@ -112,16 +162,26 @@ export default function QuickWorkoutAssign() {
 
       // Send email notification to client
       try {
-        await fetch("/api/client-portal/notify-workout-assigned", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          "/api/client-portal/notify-workout-assigned",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              clientId: selectedClient,
+              workoutId: selectedWorkout,
+              dueDate: dueDate,
+            }),
           },
-          body: JSON.stringify({
-            clientId: selectedClient,
-            workoutId: selectedWorkout,
-          }),
-        });
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Email notification API error:", errorData);
+          // Continue with success flow even if email fails
+        }
       } catch (notifyError) {
         console.error("Error sending notification email:", notifyError);
         // Continue with success flow even if email fails
@@ -129,23 +189,19 @@ export default function QuickWorkoutAssign() {
 
       setIsSuccess(true);
       setTimeout(() => {
-        setIsSuccess(false);
         setOpen(false);
-        setSelectedClient("");
-        setSelectedWorkout("");
-        setSearchQuery("");
-        setClients([]);
         router.refresh();
       }, 1500);
     } catch (err) {
       console.error("Error assigning workout:", err);
+      setError("Failed to assign workout. Please try again.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedClient, selectedWorkout, dueDate, router]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button className="w-full bg-orange-500 hover:bg-orange-600 gap-2">
           <Dumbbell className="h-4 w-4" />
@@ -159,6 +215,15 @@ export default function QuickWorkoutAssign() {
             Quickly assign a workout to a client from your dashboard.
           </DialogDescription>
         </DialogHeader>
+
+        {error && (
+          <div
+            className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mb-4"
+            role="alert"
+          >
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
 
         {isSuccess ? (
           <div className="py-6 flex flex-col items-center justify-center text-center">
@@ -183,12 +248,19 @@ export default function QuickWorkoutAssign() {
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="flex-1 pr-8"
+                          aria-label="Search for a client"
                         />
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                           {isSearching ? (
-                            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                            <Loader2
+                              className="h-4 w-4 animate-spin text-muted-foreground"
+                              aria-hidden="true"
+                            />
                           ) : (
-                            <Search className="h-4 w-4 text-muted-foreground" />
+                            <Search
+                              className="h-4 w-4 text-muted-foreground"
+                              aria-hidden="true"
+                            />
                           )}
                         </div>
                       </div>
@@ -197,12 +269,18 @@ export default function QuickWorkoutAssign() {
                 </div>
 
                 {clients.length > 0 && (
-                  <div className="border rounded-md divide-y">
+                  <div
+                    className="border rounded-md divide-y"
+                    role="listbox"
+                    aria-label="Client search results"
+                  >
                     {clients.map((client) => (
                       <div
                         key={client.id}
                         className="p-3 hover:bg-muted cursor-pointer flex items-center justify-between"
                         onClick={() => handleClientSelect(client.id)}
+                        role="option"
+                        aria-selected="false"
                       >
                         <span>{client.name}</span>
                         <Button variant="ghost" size="sm">
@@ -214,7 +292,10 @@ export default function QuickWorkoutAssign() {
                 )}
 
                 {searchQuery && clients.length === 0 && !isSearching && (
-                  <div className="text-center py-4 text-muted-foreground">
+                  <div
+                    className="text-center py-4 text-muted-foreground"
+                    aria-live="polite"
+                  >
                     No clients found matching "{searchQuery}"
                   </div>
                 )}
@@ -227,7 +308,7 @@ export default function QuickWorkoutAssign() {
                     value={selectedWorkout}
                     onValueChange={setSelectedWorkout}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger id="workout">
                       <SelectValue placeholder="Choose a workout plan" />
                     </SelectTrigger>
                     <SelectContent>
@@ -240,8 +321,29 @@ export default function QuickWorkoutAssign() {
                   </Select>
                 </div>
 
+                <div>
+                  <Label htmlFor="due-date">Due Date</Label>
+                  <div className="relative">
+                    <Input
+                      id="due-date"
+                      type="date"
+                      value={dueDate}
+                      onChange={(e) => setDueDate(e.target.value)}
+                      className="w-full"
+                      min={format(new Date(), "yyyy-MM-dd")}
+                    />
+                    <Calendar
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
+
                 {workouts.length === 0 && (
-                  <div className="text-center py-4 text-muted-foreground">
+                  <div
+                    className="text-center py-4 text-muted-foreground"
+                    aria-live="polite"
+                  >
                     No workouts available. Create a workout first.
                   </div>
                 )}
@@ -250,6 +352,7 @@ export default function QuickWorkoutAssign() {
                   <Button
                     variant="outline"
                     onClick={() => setSelectedClient("")}
+                    type="button"
                   >
                     Back to Client Search
                   </Button>
@@ -260,14 +363,21 @@ export default function QuickWorkoutAssign() {
         )}
 
         <DialogFooter className="flex justify-between">
-          <Button variant="ghost" onClick={() => setOpen(false)}>
+          <Button variant="ghost" onClick={() => setOpen(false)} type="button">
             Cancel
           </Button>
           {selectedClient && selectedWorkout && !isSuccess && (
-            <Button onClick={assignWorkout} disabled={isLoading}>
+            <Button
+              onClick={assignWorkout}
+              disabled={isLoading || !dueDate}
+              type="button"
+            >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2
+                    className="mr-2 h-4 w-4 animate-spin"
+                    aria-hidden="true"
+                  />
                   Assigning...
                 </>
               ) : (
