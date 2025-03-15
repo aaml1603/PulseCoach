@@ -15,6 +15,7 @@ export default function ClientPortalPage({
   params,
 }: {
   params: { token: string };
+  searchParams?: Record<string, string | string[] | undefined>;
 }) {
   return <ClientPortalContent token={params.token} />;
 }
